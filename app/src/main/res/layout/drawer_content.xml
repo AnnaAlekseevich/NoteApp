@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/idNotes"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="Все заметки"
+        android:gravity="center_vertical"
+        android:textSize="25sp"
+        android:padding="16dp"
+        android:background="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/idLists"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Списки"
+        android:layout_margin="16dp"
+        android:textSize="25sp"
+        android:onClick="onDrawerItemClick"/>
+
+    <TextView
+        android:id="@+id/idReminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Напоминания"
+        android:layout_margin="16dp"
+        android:textSize="25sp"
+        android:onClick="onDrawerItemClick"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/idBasket"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Корзина"
+        android:layout_margin="16dp"
+        android:textSize="25sp"/>
+
+    <TextView
+        android:id="@+id/idFavorites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Избранное"
+        android:layout_margin="16dp"
+        android:textSize="25sp"/>
+
+</LinearLayout>
