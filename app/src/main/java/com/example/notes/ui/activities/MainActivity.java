@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.notes.R;
+import com.example.notes.models.Note;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // create notes
                 Intent intent = new Intent(MainActivity.this, NoteActivity.class);
-                startActivity(intent);
+                startActivity(intent);//fixme startActivityForResult
             }
         });
     }

@@ -18,10 +18,20 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     private Context context;
     private List<Note> notes;
+    private NoteListItemClickListener noteListItemClickListener;
 
-    public NotesAdapter(Context context, List<Note> notes) {
+    public NotesAdapter(Context context, NoteListItemClickListener noteListItemClickListener) {
         this.context = context;
+        this.noteListItemClickListener = noteListItemClickListener;
+    }
+
+    public void setNotesAndUpdate(List<Note> notes) {
         this.notes = notes;
+        notifyDataSetChanged();
+    }
+
+    public void clearNotes() {
+        setNotesAndUpdate(null);
     }
 
     @NonNull
@@ -34,7 +44,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-
         holder.updateHolder(notes.get(position));
     }
 
@@ -45,16 +54,25 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
 
     class NoteViewHolder extends RecyclerView.ViewHolder {
-       public TextView tvName;
+        public TextView tvName;
+        private  Note note;
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_note_name);
+//            itemView.setOnClickListener(view -> noteListItemClickListener.onNoteClicked(note));
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    noteListItemClickListener.onNoteClicked(note);
+                }
+            });
         }
 
         public void updateHolder(Note note) {
+            this.note = note;
+            //todo if fields are empty - show default names
             tvName.setText(note.getName());
-
         }
     }
 }

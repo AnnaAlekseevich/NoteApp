@@ -1,14 +1,22 @@
 package com.example.notes.ui.activities.noteslist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.example.notes.NotesApp;
 import com.example.notes.R;
 import com.example.notes.models.Note;
+import com.example.notes.ui.activities.Fragment2;
+import com.example.notes.ui.activities.MainActivity;
+import com.example.notes.ui.activities.NoteActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +26,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
-public class NotesListFragment extends Fragment {
+public class NotesListFragment extends Fragment implements NoteListItemClickListener {
 
     private static final String TAG = NotesListFragment.class.getSimpleName();
     private static final String ARG_COUNT = "param1";
-    private Integer counter;
-    private  NotesAdapter notesAdapter;
+
+    private NotesAdapter notesAdapter;
+    //for notes from hint
+    EditText et_Name;
+    ProgressBar pb_list_notes;
+    TextView tv_error;
 
 
-    public static NotesListFragment newInstance(Integer counter){
+    public static NotesListFragment newInstance(Integer counter) {
         NotesListFragment fragment = new NotesListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COUNT, counter);
@@ -49,22 +65,36 @@ public class NotesListFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_1, container, false);
 
-        notesAdapter = new NotesAdapter(getContext(), getStubNotes());
+        notesAdapter = new NotesAdapter(getContext(),this);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(notesAdapter);
+        notesAdapter.setNotesAndUpdate(getStubNotes());
+
+        et_Name = view.findViewById(R.id.et_name);
+        pb_list_notes = view.findViewById(R.id.pb_list_notes);
+        tv_error = view.findViewById(R.id.tv_error);
+
         return view;
     }
 
-    private List<Note> getStubNotes(){
-        List<Note> notes = new ArrayList();
+    @Override
+    public void onNoteClicked(Note note) {
+    //todo open activity
+        Intent intent = new Intent(getContext(), NoteActivity.class);
+        intent.putExtra(NoteActivity.ARG_NOTE, note);
+        startActivity(intent);
+    }
 
-        Note note1 = new Note();
-        note1.setName("Pervaia zametka");
-        notes.add(note1);
+    private List<Note> getStubNotes() {
+
+
+        List<Note> notes = new ArrayList();
 
         Note note2 = new Note();
         note2.setName("Privet vsem");
@@ -79,8 +109,40 @@ public class NotesListFragment extends Fragment {
         notes.add(note4);
 
 
-        return  notes;
+        return notes;
     }
+
+    private void updateAllNotes() {
+        notesAdapter.clearNotes();
+        tv_error.setVisibility(View.GONE);
+        pb_list_notes.setVisibility(ProgressBar.VISIBLE);
+        NotesApp.getInstance().getDatabaseManager().getAllNotes()
+                .subscribeOn(Schedulers.io())//thread pool
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<List<Note>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(List<Note> notes) {
+                        notesAdapter.setNotesAndUpdate(notes);
+                        pb_list_notes.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        pb_list_notes.setVisibility(View.GONE);
+                        tv_error.setVisibility(View.VISIBLE);
+                        tv_error.setText("" + e);
+
+                    }
+                });
+
+
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -97,7 +159,7 @@ public class NotesListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+        updateAllNotes();
     }
 
     @Override
@@ -129,4 +191,5 @@ public class NotesListFragment extends Fragment {
         super.onDetach();
         Log.d(TAG, "onDetach");
     }
+
 }
