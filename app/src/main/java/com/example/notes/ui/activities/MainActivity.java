@@ -6,9 +6,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.example.notes.R;
+import com.example.notes.models.NoteType;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -17,6 +19,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import static com.example.notes.ui.activities.NoteActivity.ARG_NoteType;
+
 public class MainActivity extends AppCompatActivity {
 
     private String[] names = new String[] {"first", "second"};
@@ -24,20 +28,16 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
 
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate");
-
-       // final ArrayList<Notes> notes = new ArrayList<>();
-
-        //ListView listView = findViewById(R.id.listView);
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-//
-//        ListView.setAdapter(adapter);
-
 
         drawerLayout = findViewById(R.id.drawerLayout);
 
@@ -45,22 +45,22 @@ public class MainActivity extends AppCompatActivity {
         ViewPager2    viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(adapter);
 
-
-
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+
+        //for PopupMenu
+
 
 
         findViewById(R.id.floatingActionButton2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // create notes
-                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                //startActivity(intent);//fixme startActivityForResult
+                showPopupMenu(view);
+
             }
         });
     }
@@ -103,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
     public void onDrawerItemClick(View v){
         String message = "";
         switch (v.getId()){
+            case R.id.id_Notes:
+                message = "Notes";
+                break;
             case R.id.idLists:
                 message = "Lists";
             break;
@@ -145,4 +148,54 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
     }
+
+    View.OnClickListener viewClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showPopupMenu(v);
+        }
+    };
+
+    private void showPopupMenu(View v) {
+        PopupMenu popupMenu = new PopupMenu(this, v);
+        popupMenu.inflate(R.menu.popup_menu);
+
+        popupMenu
+                .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+
+                        switch (item.getItemId()) {
+                            case R.id.menu1:
+                                intent.putExtra(ARG_NoteType, NoteType.Text);
+                                startActivity(intent);//fixme startActivityForResult
+                                /*getSupportFragmentManager().beginTransaction()
+                                        .add(R.id.fragment_note, MainActivity.class, null)
+                                        .commit();*/
+                                return true;
+                            case R.id.menu2:
+                                intent.putExtra(ARG_NoteType, NoteType.List);
+                                startActivity(intent);//fixme startActivityForResult
+                                return true;
+                            case R.id.menu3:
+                                intent.putExtra(ARG_NoteType, NoteType.Reminder);
+                                startActivity(intent);//fixme startActivityForResult
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                Toast.makeText(getApplicationContext(), "onDismiss",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        popupMenu.show();
+    }
+
 }

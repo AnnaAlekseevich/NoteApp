@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Notes</string>
+    <string name="app_name">NiftyNotes</string>
     <string name="create_name_notes_hint">Введите название</string>
     <string name="create_name_notes_text">Введите содержание</string>
-
+    <string name="activate_reminder">Активировать напоминание</string>
+    <string name="deactivate_reminder">Деактивировать напоминание</string>
 </resources>

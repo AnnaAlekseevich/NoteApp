@@ -16,6 +16,18 @@
         android:background="@color/colorPrimary"/>
 
     <TextView
+        android:id="@+id/id_Notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Заметки"
+        android:layout_margin="16dp"
+        android:textSize="25sp"
+        android:onClick="onDrawerItemClick"/>
+
+    <TextView
         android:id="@+id/idLists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,6 +75,17 @@
         android:clickable="true"
         android:focusable="true"
         android:text="Избранное"
+        android:layout_margin="16dp"
+        android:textSize="25sp"/>
+
+    <TextView
+        android:id="@+id/idImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Картинки"
         android:layout_margin="16dp"
         android:textSize="25sp"/>
 
