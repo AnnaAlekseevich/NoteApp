@@ -9,11 +9,6 @@ import java.util.List;
 import androidx.room.Room;
 import io.reactivex.Completable;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-
-import static com.example.notes.ui.activities.NoteActivity.etName;
-import static com.example.notes.ui.activities.NoteActivity.etText;
 
 public class DataBaseManager {
 

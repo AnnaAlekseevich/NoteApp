@@ -8,11 +8,15 @@ import android.widget.TextView;
 
 import com.example.notes.R;
 import com.example.notes.models.Note;
+import com.example.notes.models.NoteType;
+import com.example.notes.ui.activities.createnotefragment.listfragment.ListsAdapter;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
 
@@ -55,12 +59,24 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     class NoteViewHolder extends RecyclerView.ViewHolder {
         public TextView tvName;
+        public TextView tvData;
+        private ListsAdapter listsAdapter;
+        private RecyclerView recyclerView;
+
+
         private  Note note;
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_note_name);
-//            itemView.setOnClickListener(view -> noteListItemClickListener.onNoteClicked(note));
+            tvData = itemView.findViewById(R.id.tv_note_data);
+            recyclerView = itemView.findViewById(R.id.rv_check_note);
+
+            listsAdapter = new ListsAdapter(itemView.getContext(), null, false);
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+            recyclerView.setAdapter(listsAdapter);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -73,6 +89,20 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
             this.note = note;
             //todo if fields are empty - show default names
             tvName.setText(note.getName());
+            tvData.setText(note.getText());
+
+            listsAdapter.clearItems();
+            listsAdapter.addAndUpdate(note.getCheckItems());
+
+            if(note.getNoteType()== NoteType.List){
+                recyclerView.setVisibility(View.VISIBLE);
+                tvData.setVisibility(View.GONE);
+            }else{
+                recyclerView.setVisibility(View.GONE);
+                tvData.setVisibility(View.VISIBLE);
+            }
         }
     }
+
+
 }

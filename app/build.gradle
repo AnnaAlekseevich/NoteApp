@@ -50,5 +50,7 @@ dependencies {
 
     implementation 'io.reactivex.rxjava2:rxandroid:+'
 
+    implementation 'com.google.code.gson:gson:2.8.6'
+
 
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/et_description_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/create_name_notes_text"
+        android:inputType="textMultiLine"
+        android:lines="15"
+        android:background="@color/colorPrimaryDark"/>
+
+    <TextView
+        android:id="@+id/et_description_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Установите дату и время"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <Button android:id="@+id/dateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Установить дату"
+        android:onClick="setDate"  />
+
+    <Button android:id="@+id/timeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Установить время"
+        android:onClick="setTime"
+        android:layout_toRightOf="@id/dateButton"/>
+
+    <Button android:id="@+id/setReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activate_reminder"
+        android:layout_centerHorizontal="true"
+        android:onClick="setReminder"
+        android:layout_below="@id/dateButton"/>
+</RelativeLayout>
+
+
+</LinearLayout>
