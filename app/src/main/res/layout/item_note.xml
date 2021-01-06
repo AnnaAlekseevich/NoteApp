@@ -27,6 +27,18 @@
         android:maxLines="5"
         android:padding="5dp"/>
 
+    <TextView
+        android:id="@+id/tv_note_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:background="@color/design_default_color_surface"
+        android:maxLines="5"
+        android:padding="5dp"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_check_note"
         android:layout_width="match_parent"

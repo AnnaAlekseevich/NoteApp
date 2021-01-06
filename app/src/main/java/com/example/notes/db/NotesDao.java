@@ -17,11 +17,11 @@ import io.reactivex.Single;
 @Dao
 public interface NotesDao {
 
-    @Query("SELECT * FROM note")
-    Single<List<Note>> getAllNotes();
+    @Query("SELECT * FROM note WHERE userId = :userId")
+    Single<List<Note>> getAllNotes(long userId);
 
-    @Query("SELECT * FROM note WHERE id = :id")
-    Note getById(long id);
+    @Query("SELECT * FROM note WHERE id = :id AND userId = :userId")
+    Note getById(long id, long userId);
 
     @Insert
     Completable insert(Note note);

@@ -4,4 +4,12 @@
     <string name="create_name_notes_text">Введите содержание</string>
     <string name="activate_reminder">Активировать напоминание</string>
     <string name="deactivate_reminder">Деактивировать напоминание</string>
+    <string name="register_title">Зарегистрируйте нового пользователя</string>
+    <string name="user_name_hint">Введите имя пользователя</string>
+    <string name="user_password_hint">Введите пароль</string>
+    <string name="create_user">Создать</string>
+    <string name="open_user">Войти</string>
+    <string name="empty_data">Недостаточно данных</string>
+    <string name="login_title">Авторизуйтесь чтобы открыть заметки</string>
+    <string name="create_new_user">Создать нового пользователя</string>
 </resources>

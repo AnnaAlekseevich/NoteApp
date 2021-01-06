@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.notes.R;
 import com.example.notes.models.NoteType;
+import com.example.notes.ui.activities.useractivities.LoginActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -27,10 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
-
-
-
-
 
 
     @Override
@@ -50,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
         //for PopupMenu
-
-
 
         findViewById(R.id.floatingActionButton2).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,9 +83,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sort:
                 message = "sort";
                 break;
+            case R.id.logout:
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                break;
             case R.id.view_headline:
                 item.setChecked(!item.isChecked());
-                item.setIcon(item.isChecked()? R.drawable.ic_view_module_black_24dp :  R.drawable.ic_view_headline_black_24dp);
+                item.setIcon(!item.isChecked()? R.drawable.ic_view_module_black_24dp :  R.drawable.ic_view_headline_black_24dp);
                 break;
 
         }

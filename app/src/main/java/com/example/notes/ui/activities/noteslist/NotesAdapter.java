@@ -1,6 +1,7 @@
 package com.example.notes.ui.activities.noteslist;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +12,12 @@ import com.example.notes.models.Note;
 import com.example.notes.models.NoteType;
 import com.example.notes.ui.activities.createnotefragment.listfragment.ListsAdapter;
 
+import java.util.Calendar;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
 
@@ -62,15 +63,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         public TextView tvData;
         private ListsAdapter listsAdapter;
         private RecyclerView recyclerView;
+        public TextView tv_note_date;
 
 
-        private  Note note;
+        private Note note;
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_note_name);
             tvData = itemView.findViewById(R.id.tv_note_data);
             recyclerView = itemView.findViewById(R.id.rv_check_note);
+            tv_note_date = itemView.findViewById(R.id.tv_note_date);
 
             listsAdapter = new ListsAdapter(itemView.getContext(), null, false);
 
@@ -90,17 +93,32 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
             //todo if fields are empty - show default names
             tvName.setText(note.getName());
             tvData.setText(note.getText());
-
             listsAdapter.clearItems();
             listsAdapter.addAndUpdate(note.getCheckItems());
 
-            if(note.getNoteType()== NoteType.List){
+            if (note.getNoteType() == NoteType.List) {
                 recyclerView.setVisibility(View.VISIBLE);
                 tvData.setVisibility(View.GONE);
-            }else{
+                tv_note_date.setVisibility(View.GONE);
+            } else if (note.getNoteType() == NoteType.Text) {
                 recyclerView.setVisibility(View.GONE);
                 tvData.setVisibility(View.VISIBLE);
+                tv_note_date.setVisibility(View.GONE);
+            } else if (note.getNoteType() == NoteType.Reminder) {
+                recyclerView.setVisibility(View.GONE);
+                tv_note_date.setVisibility(View.VISIBLE);
+                tvData.setVisibility(View.VISIBLE);
+                putFormattedDateToTextView(note.getReminder().getReminderDate());
             }
+        }
+
+        private void putFormattedDateToTextView(long date) {
+            Calendar dateAndTime = Calendar.getInstance();
+            dateAndTime.setTimeInMillis(date);
+            tv_note_date.setText(DateUtils.formatDateTime(context,
+                    dateAndTime.getTimeInMillis(),
+                    DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
+                            | DateUtils.FORMAT_SHOW_TIME));
         }
     }
 

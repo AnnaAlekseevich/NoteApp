@@ -1,8 +1,11 @@
 package com.example.notes.db;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.notes.models.Note;
+import com.example.notes.models.UserModel;
+import com.example.notes.utils.UserProviderSingleton;
 
 import java.util.List;
 
@@ -19,9 +22,24 @@ public class DataBaseManager {
                 .build();
     }
 
+    public Completable insertUser(UserModel userModel) {
+        if (database == null) return Completable.error(new Exception("Database is not available"));
+        Log.d("Registration_PROBLEM", "insertUser name=" + userModel.name + "; pass= " + userModel.pass);
+        final UserDao dao = database.userDao();
+        return dao.insert(userModel);
+    }
+
+    public Single<UserModel> getUserWithName(String name) {
+        if (database == null) return Single.error(new Exception("Database is not available"));
+        final UserDao dao = database.userDao();
+        Log.d("Registration_PROBLEM", "getUserWithName name=" + name);
+        return dao.getUserByName(name);
+    }
+
     public Completable insertNote(Note note) {
 
         if (database == null) return Completable.error(new Exception("Database is not available"));
+        note.setUserId(UserProviderSingleton.getInstance().getCurrentUser().id);
 
         final NotesDao dao = database.notesDao();
 
@@ -41,6 +59,8 @@ public class DataBaseManager {
 
         if (database == null) return Completable.error(new Exception("Database is not available"));
 
+        note.setUserId(UserProviderSingleton.getInstance().getCurrentUser().id);
+
         final NotesDao dao = database.notesDao();
 
         return dao.update(note);
@@ -49,7 +69,7 @@ public class DataBaseManager {
     public Single<List<Note>> getAllNotes() {
         if (database == null) return Single.error(new Exception("Database is not available"));
         final NotesDao dao = database.notesDao();
-        return dao.getAllNotes();
+        return dao.getAllNotes(UserProviderSingleton.getInstance().getCurrentUser().id);
     }
 
 }

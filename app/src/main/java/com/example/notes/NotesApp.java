@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.notes.db.AppDatabase;
 import com.example.notes.db.DataBaseManager;
+import com.example.notes.utils.PreferenceManager;
 
 import androidx.room.Room;
 
@@ -19,6 +20,7 @@ public class NotesApp extends Application {
         super.onCreate();
         instance = this;
         dataBaseManager = new DataBaseManager(this);
+        PreferenceManager.init(this);
 
     }
 

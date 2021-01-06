@@ -16,6 +16,7 @@ import com.example.notes.NotesApp;
 import com.example.notes.R;
 import com.example.notes.models.Note;
 import com.example.notes.ui.activities.NoteActivity;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -58,7 +59,7 @@ public class NotesListFragment extends Fragment implements NoteListItemClickList
         View view = inflater.inflate(R.layout.fragment_1, container, false);
         setHasOptionsMenu(true);
 
-        notesAdapter = new NotesAdapter(getContext(),this);
+        notesAdapter = new NotesAdapter(getContext(), this);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, 1));
         recyclerView.setAdapter(notesAdapter);
@@ -68,7 +69,6 @@ public class NotesListFragment extends Fragment implements NoteListItemClickList
 
         return view;
     }
-
 
 
     @Override
@@ -166,8 +166,8 @@ public class NotesListFragment extends Fragment implements NoteListItemClickList
             case R.id.view_headline:
                 if (item.isChecked()) {
                     recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, 1));
-                } else if (!item.isChecked()){
-                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, 1));
+                } else if (!item.isChecked()) {
+                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, 1));
                 }
                 recyclerView.setAdapter(notesAdapter);
                 notesAdapter.notifyDataSetChanged();
