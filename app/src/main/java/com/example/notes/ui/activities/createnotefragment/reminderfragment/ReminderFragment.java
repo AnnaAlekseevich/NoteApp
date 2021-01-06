@@ -26,7 +26,7 @@ public class ReminderFragment extends BaseNoteFragment {
 
     TextView tv_description_date;
     EditText et_description_note;
-    Calendar dateAndTime = Calendar.getInstance();
+    static Calendar dateAndTime = Calendar.getInstance();
     Button btActivate;
 
     public static ReminderFragment newInstance() {
@@ -61,7 +61,7 @@ public class ReminderFragment extends BaseNoteFragment {
         View view = inflater.inflate(R.layout.fragment_reminder, container, false);
         setHasOptionsMenu(true);
 
-        tv_description_date = view.findViewById(R.id.et_description_date);
+        tv_description_date = view.findViewById(R.id.tv_description_date);
         et_description_note = view.findViewById(R.id.et_description_note);
         setInitialDateTime();
 
@@ -83,7 +83,6 @@ public class ReminderFragment extends BaseNoteFragment {
         btActivate.setOnClickListener(view1 -> {
             note.getReminder().setActive(!note.getReminder().isActive());
             changeActivateButtonText();
-
         });
 
         return view;

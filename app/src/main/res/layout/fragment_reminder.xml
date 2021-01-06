@@ -11,10 +11,10 @@
         android:hint="@string/create_name_notes_text"
         android:inputType="textMultiLine"
         android:lines="15"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/white"/>
 
     <TextView
-        android:id="@+id/et_description_date"
+        android:id="@+id/tv_description_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Установите дату и время"/>

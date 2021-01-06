@@ -20,6 +20,7 @@ import androidx.room.TypeConverters;
 public class Note implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     public long id;
+    private long userId;
     private String name; //= new String[]{"firstNote", "secondNote"};
     private String text;
     private long createDate;
@@ -37,6 +38,7 @@ public class Note implements Parcelable {
 
     protected Note(Parcel in) {
         id = in.readLong();
+        userId = in.readLong();
         name = in.readString();
         text = in.readString();
         createDate = in.readLong();
@@ -87,6 +89,14 @@ public class Note implements Parcelable {
         updateTime();
     }
 
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
     public long getChangeDate() {
         return changeDate;
     }
@@ -123,6 +133,7 @@ public class Note implements Parcelable {
     public String toString() {
         return "Note{" +
                 "id=" + id +
+                "userId=" + userId +
                 ", name='" + name + '\'' +
                 ", text='" + text + '\'' +
                 ", createDate=" + createDate +
@@ -138,6 +149,7 @@ public class Note implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeLong(id);
+        parcel.writeLong(userId);
         parcel.writeString(name);
         parcel.writeString(text);
         parcel.writeLong(createDate);
