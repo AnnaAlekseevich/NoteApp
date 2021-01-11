@@ -1,7 +1,12 @@
 package com.example.notes.ui.activities.createnotefragment.reminderfragment;
 
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -21,6 +26,7 @@ import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 public class ReminderFragment extends BaseNoteFragment {
 
@@ -28,6 +34,9 @@ public class ReminderFragment extends BaseNoteFragment {
     EditText et_description_note;
     static Calendar dateAndTime = Calendar.getInstance();
     Button btActivate;
+    public static String create_reminder = "SKOVORODA";
+    String reminder = "У Вас напоминание";
+
 
     public static ReminderFragment newInstance() {
         ReminderFragment fragment = new ReminderFragment();
@@ -83,9 +92,45 @@ public class ReminderFragment extends BaseNoteFragment {
         btActivate.setOnClickListener(view1 -> {
             note.getReminder().setActive(!note.getReminder().isActive());
             changeActivateButtonText();
+            addNotification();
         });
 
         return view;
+    }
+
+    private void addNotification() {
+
+        NotificationManager notificationManager =
+                (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(create_reminder, "My channel",
+                    NotificationManager.IMPORTANCE_HIGH);
+
+            channel.setDescription("My channel description");
+            channel.enableLights(true);
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(false);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), create_reminder)
+                .setSmallIcon(R.drawable.ic_priority_high_black_24dp)
+                .setContentTitle(reminder)
+                .setContentText(note.getName())
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        /*Intent notificationIntent = new Intent(this, ReminderFragment.class);
+        notificationIntent.setAction(ACTION_SNOOZE);
+        notificationIntent.putExtra(EXTRA_NOTIFICATION_ID, 0);
+        PendingIntent snoozePendingIntent =
+                PendingIntent.getBroadcast(this, 0, notificationIntent, 0);*/
+
+
+        Notification notification = builder.build();
+
+        notificationManager.notify(1, notification);
+
     }
 
     // отображаем диалоговое окно для выбора даты
