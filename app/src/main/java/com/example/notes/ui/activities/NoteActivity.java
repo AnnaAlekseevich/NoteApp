@@ -1,6 +1,8 @@
 package com.example.notes.ui.activities;
 
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,9 +17,9 @@ import com.example.notes.models.Note;
 import com.example.notes.models.NoteType;
 import com.example.notes.models.Reminder;
 import com.example.notes.ui.activities.createnotefragment.BaseNoteFragment;
-import com.example.notes.ui.activities.createnotefragment.textfragment.NoteTextFragment;
+import com.example.notes.ui.activities.createnotefragment.listfragment.CheckItemsListFragment;
 import com.example.notes.ui.activities.createnotefragment.reminderfragment.ReminderFragment;
-import com.example.notes.ui.activities.createnotefragment.listfragment.ListFragment;
+import com.example.notes.ui.activities.createnotefragment.textfragment.NoteTextFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,7 @@ public class NoteActivity extends AppCompatActivity {
     private Note currentNote;
     private boolean isNoteEditingMode = false; //todo use this flag to edit current note;
     BaseNoteFragment fragmentNotes;
+    private long lastCloseTime = 0;
 
     private void changeProgressBarVisibility(boolean show) {
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -85,19 +88,21 @@ public class NoteActivity extends AppCompatActivity {
         fragmentNotes.setArguments(bundle);
         ft.replace(R.id.fragment_note, fragmentNotes);
         ft.commit();
+
     }
+
 
     private BaseNoteFragment generateFragment() {
 
-    switch (currentNoteType){
-        case Text:
-            return  NoteTextFragment.newInstance();
-        case List:
-            return ListFragment.newInstance();
-        case Reminder:
-            return ReminderFragment.newInstance();
-    }
-     throw new IllegalArgumentException("Unknown type");
+        switch (currentNoteType) {
+            case Text:
+                return NoteTextFragment.newInstance();
+            case List:
+                return CheckItemsListFragment.newInstance();
+            case Reminder:
+                return ReminderFragment.newInstance();
+        }
+        throw new IllegalArgumentException("Unknown type");
     }
 
     private void updateViewWithNote(Note note) {
@@ -108,7 +113,7 @@ public class NoteActivity extends AppCompatActivity {
     private Note createNewNote() {
         Note note = new Note(currentNoteType);
         note.setCreateDate(System.currentTimeMillis());
-        List<CheckNoteItem> firstChecklist  = new ArrayList<>();
+        List<CheckNoteItem> firstChecklist = new ArrayList<>();
         firstChecklist.add(new CheckNoteItem());
         note.setCheckItems(firstChecklist);
         note.setReminder(new Reminder(System.currentTimeMillis()));
@@ -123,8 +128,37 @@ public class NoteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d("USER_PROBLEM", "onBackPressed");
         fillInNote();
-        saveNoteAndClose(currentNote);
+        if (isDataEnaughtToSave()) {
+            saveNoteAndClose(currentNote);
+        } else {
+            Toast.makeText(this, "Заметка пуста. Чтобы выйти, нажмите еще раз", Toast.LENGTH_SHORT).show();
+
+            if ((System.currentTimeMillis() - lastCloseTime) < 3000) {
+                finish();
+            }
+            lastCloseTime = System.currentTimeMillis();
+        }
+
+    }
+
+
+    private boolean isDataEnaughtToSave() {
+        if (currentNoteType == NoteType.Text) {
+            if (TextUtils.isEmpty(currentNote.getName()) && TextUtils.isEmpty(currentNote.getText())) {
+                return false;
+            }
+        } else if (currentNoteType == NoteType.List) {
+            if (TextUtils.isEmpty(currentNote.getName()) == true) {
+                return false;
+            }
+        } else if (currentNoteType == NoteType.Reminder) {
+            if (TextUtils.isEmpty(currentNote.getName()) == true && TextUtils.isEmpty(currentNote.getText()) == true) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -134,9 +168,13 @@ public class NoteActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 break;
+            case R.id.basket:
+                deleteNote(currentNote);
+                break;
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
+
 
     private void fillInNote() {
         currentNote.setName(etName.getText().toString());
@@ -148,6 +186,7 @@ public class NoteActivity extends AppCompatActivity {
     private void deleteNote(Note note) {
         NotesApp.getInstance().getDatabaseManager().deleteNote(note)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new CompletableObserver() {
                             @Override
@@ -162,7 +201,8 @@ public class NoteActivity extends AppCompatActivity {
                                 //прятать прогресс бар
                                 changeProgressBarVisibility(false);
                                 Toast.makeText(NoteActivity.this, "current Note = " + currentNote.toString(),
-                                        Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_SHORT).show();
+                                finish();
 
                             }
 

@@ -23,6 +23,9 @@ public interface NotesDao {
     @Query("SELECT * FROM note WHERE id = :id AND userId = :userId")
     Note getById(long id, long userId);
 
+    @Query("SELECT * FROM note WHERE noteType = :typeName AND userId = :userId")
+    Single<List<Note>> getNotesByType(String typeName, long userId);
+
     @Insert
     Completable insert(Note note);
 

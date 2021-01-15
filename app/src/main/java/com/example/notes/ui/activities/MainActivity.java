@@ -18,16 +18,16 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import static com.example.notes.ui.activities.NoteActivity.ARG_NoteType;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[] names = new String[] {"first", "second"};
-
     private DrawerLayout drawerLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
+    ViewPager2 viewPager;
 
 
     @Override
@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawerLayout);
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle());
-        ViewPager2    viewPager = findViewById(R.id.view_pager);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
+        viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(adapter);
 
         ActionBar actionBar = getSupportActionBar();
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         String message = "";
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.view_headline:
                 item.setChecked(!item.isChecked());
-                item.setIcon(!item.isChecked()? R.drawable.ic_view_module_black_24dp :  R.drawable.ic_view_headline_black_24dp);
+                item.setIcon(!item.isChecked() ? R.drawable.ic_view_module_black_24dp : R.drawable.ic_view_headline_black_24dp);
                 break;
 
         }
@@ -100,18 +100,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onDrawerItemClick(View v){
+    public void onDrawerItemClick(View v) {
         String message = "";
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.id_Notes:
+                viewPager.setCurrentItem(1);
                 message = "Notes";
                 break;
             case R.id.idLists:
+                viewPager.setCurrentItem(2);
                 message = "Lists";
-            break;
+                break;
             case R.id.idReminder:
+                viewPager.setCurrentItem(3);
                 message = "Reminder";
-            break;
+                break;
         }
         if (!message.isEmpty()) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
