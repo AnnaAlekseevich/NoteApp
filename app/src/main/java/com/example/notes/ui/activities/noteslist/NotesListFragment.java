@@ -1,6 +1,5 @@
 package com.example.notes.ui.activities.noteslist;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,13 +7,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.notes.NotesApp;
 import com.example.notes.R;
 import com.example.notes.models.Note;
+import com.example.notes.models.NoteType;
 import com.example.notes.ui.activities.NoteActivity;
 
 import java.util.List;
@@ -24,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -32,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
 public class NotesListFragment extends Fragment implements NoteListItemClickListener {
 
     private static final String TAG = NotesListFragment.class.getSimpleName();
-    private static final String ARG_COUNT = "param1";
+    private static final String ARG_TYPE = "ARG_TYPE";
 
     private NotesAdapter notesAdapter;
     //for notes from hint
@@ -40,16 +40,27 @@ public class NotesListFragment extends Fragment implements NoteListItemClickList
     ProgressBar pb_list_notes;
     TextView tv_error;
     RecyclerView recyclerView;
+    private NoteType currentType;
 
 
-    public static NotesListFragment newInstance(Integer counter) {
+    public static NotesListFragment newInstance(@Nullable NoteType type) {
         NotesListFragment fragment = new NotesListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COUNT, counter);
+        if (type != null) {
+            args.putSerializable(ARG_TYPE, type);
+        }
         fragment.setArguments(args);
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null && getArguments().getSerializable(ARG_TYPE) != null) {
+            currentType = (NoteType) getArguments().getSerializable(ARG_TYPE);
+        }
+
+    }
 
     @Nullable
     @Override
@@ -83,7 +94,13 @@ public class NotesListFragment extends Fragment implements NoteListItemClickList
         notesAdapter.clearNotes();
         tv_error.setVisibility(View.GONE);
         pb_list_notes.setVisibility(ProgressBar.VISIBLE);
-        NotesApp.getInstance().getDatabaseManager().getAllNotes()
+
+        Single<List<Note>> getNotesRequest = currentType == null ?
+                NotesApp.getInstance().getDatabaseManager().getAllNotes() :
+                NotesApp.getInstance().getDatabaseManager().getNotesByType(currentType);
+
+
+        getNotesRequest
                 .subscribeOn(Schedulers.io())//thread pool
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<List<Note>>() {

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.example.notes.R;
 import com.example.notes.models.Note;
 import com.example.notes.models.NoteType;
-import com.example.notes.ui.activities.createnotefragment.listfragment.ListsAdapter;
+import com.example.notes.ui.activities.createnotefragment.listfragment.CheckItemsListsAdapter;
 
 import java.util.Calendar;
 import java.util.List;
@@ -61,7 +61,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
     class NoteViewHolder extends RecyclerView.ViewHolder {
         public TextView tvName;
         public TextView tvData;
-        private ListsAdapter listsAdapter;
+        private CheckItemsListsAdapter checkItemsListsAdapter;
         private RecyclerView recyclerView;
         public TextView tv_note_date;
 
@@ -75,10 +75,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
             recyclerView = itemView.findViewById(R.id.rv_check_note);
             tv_note_date = itemView.findViewById(R.id.tv_note_date);
 
-            listsAdapter = new ListsAdapter(itemView.getContext(), null, false);
+            checkItemsListsAdapter = new CheckItemsListsAdapter(itemView.getContext(), false);
 
             recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-            recyclerView.setAdapter(listsAdapter);
+            recyclerView.setAdapter(checkItemsListsAdapter);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,8 +93,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
             //todo if fields are empty - show default names
             tvName.setText(note.getName());
             tvData.setText(note.getText());
-            listsAdapter.clearItems();
-            listsAdapter.addAndUpdate(note.getCheckItems());
+            checkItemsListsAdapter.clearItems();
+            checkItemsListsAdapter.addAndUpdate(note.getCheckItems());
 
             if (note.getNoteType() == NoteType.List) {
                 recyclerView.setVisibility(View.VISIBLE);

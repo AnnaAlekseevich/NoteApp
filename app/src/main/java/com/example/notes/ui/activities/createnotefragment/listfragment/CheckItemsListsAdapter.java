@@ -20,16 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.BaseListHolder> {
+public class CheckItemsListsAdapter extends RecyclerView.Adapter<CheckItemsListsAdapter.BaseListHolder> {
 
     private Context context;
     private List<CheckNoteItem> checkNoteList = new ArrayList<>();
-    private CheckNoteItemListListener checkNoteItemListListener;
     private boolean editable;
 
-    public ListsAdapter(Context context, CheckNoteItemListListener checkNoteItemListListener, boolean editable) {
+    public CheckItemsListsAdapter(Context context, boolean editable) {
         this.context = context;
-        this.checkNoteItemListListener = checkNoteItemListListener;
         this.editable = editable;
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.notes.models.Note;
+import com.example.notes.models.NoteType;
 import com.example.notes.models.UserModel;
 import com.example.notes.utils.UserProviderSingleton;
 
@@ -69,7 +70,14 @@ public class DataBaseManager {
     public Single<List<Note>> getAllNotes() {
         if (database == null) return Single.error(new Exception("Database is not available"));
         final NotesDao dao = database.notesDao();
+        Log.d("USER_PROBLEM", "getAllNotes UserProviderSingleton.getInstance().getCurrentUser() = " + UserProviderSingleton.getInstance().getCurrentUser());
         return dao.getAllNotes(UserProviderSingleton.getInstance().getCurrentUser().id);
+    }
+
+    public Single<List<Note>> getNotesByType(NoteType noteType) {
+        if (database == null) return Single.error(new Exception("Database is not available"));
+        final NotesDao dao = database.notesDao();
+        return dao.getNotesByType(noteType.name(), UserProviderSingleton.getInstance().getCurrentUser().id);
     }
 
 }
