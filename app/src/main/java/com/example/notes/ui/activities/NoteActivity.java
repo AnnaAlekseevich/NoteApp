@@ -171,6 +171,13 @@ public class NoteActivity extends AppCompatActivity {
             case R.id.basket:
                 deleteNote(currentNote);
                 break;
+            case R.id.star:
+                item.setChecked(!item.isChecked());
+                item.setIcon(!item.isChecked() ? R.drawable.ic_star_border_black_24dp : R.drawable.ic_star_black_24dp);
+                break;
+            case R.id.palette:
+                deleteNote(currentNote);
+                break;
         }
         return true;
     }

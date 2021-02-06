@@ -30,7 +30,7 @@ public class UserProviderSingleton {
     }
 
     public void updateCurrentUser(@Nullable UserModel currentUser) {
-        Log.d("USER_PROBLEM", "updateCurrentUser currentUse =r" + currentUser);
+        Log.d("USER_PROBLEM", "updateCurrentUser currentUser = " + currentUser);
         Thread.dumpStack();
         this.currentUser = currentUser;
         PreferenceManager.saveLastUserName(currentUser.name);
