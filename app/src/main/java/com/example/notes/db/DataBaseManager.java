@@ -12,6 +12,7 @@ import java.util.List;
 
 import androidx.room.Room;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class DataBaseManager {
@@ -56,6 +57,15 @@ public class DataBaseManager {
         return dao.delete(note);
     }
 
+    public Completable clearBasket() {
+
+        if (database == null) return Completable.error(new Exception("Database is not available"));
+
+        final NotesDao dao = database.notesDao();
+
+        return dao.clearBasket(UserProviderSingleton.getInstance().getCurrentUser().id);
+    }
+
     public Completable updateNote(Note note) {
 
         if (database == null) return Completable.error(new Exception("Database is not available"));
@@ -71,7 +81,20 @@ public class DataBaseManager {
         if (database == null) return Single.error(new Exception("Database is not available"));
         final NotesDao dao = database.notesDao();
         Log.d("USER_PROBLEM", "getAllNotes UserProviderSingleton.getInstance().getCurrentUser() = " + UserProviderSingleton.getInstance().getCurrentUser());
-        return dao.getAllNotes(UserProviderSingleton.getInstance().getCurrentUser().id);
+        return dao.getAllNotes(UserProviderSingleton.getInstance().getCurrentUser().id, false);
+    }
+
+    public Flowable<List<Note>> getFavoriteNotes() {
+        if (database == null) return Flowable.error(new Exception("Database is not available"));
+        final NotesDao dao = database.notesDao();
+        Log.d("USER_PROBLEM", "getFavoriteNotes UserProviderSingleton.getInstance().getCurrentUser() = " + UserProviderSingleton.getInstance().getCurrentUser());
+        return dao.getFavoritesNotes(UserProviderSingleton.getInstance().getCurrentUser().id, true);
+    }
+
+    public Flowable<List<Note>> getDeletedNotes() {
+        if (database == null) return Flowable.error(new Exception("Database is not available"));
+        final NotesDao dao = database.notesDao();
+        return dao.getDeletedNotes(UserProviderSingleton.getInstance().getCurrentUser().id, true);
     }
 
     public Single<List<Note>> getNotesByType(NoteType noteType) {

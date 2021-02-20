@@ -44,7 +44,7 @@ public class NoteActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private NoteType currentNoteType;
-    private Note currentNote;
+    public Note currentNote;
     private boolean isNoteEditingMode = false; //todo use this flag to edit current note;
     BaseNoteFragment fragmentNotes;
     private long lastCloseTime = 0;
@@ -120,11 +120,12 @@ public class NoteActivity extends AppCompatActivity {
         return note;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.notes_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.notes_menu, menu);
+//        return super.onCreateOptionsMenu(menu);
+//
+//    }
 
     @Override
     public void onBackPressed() {
@@ -168,18 +169,8 @@ public class NoteActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 break;
-            case R.id.basket:
-                deleteNote(currentNote);
-                break;
-            case R.id.star:
-                item.setChecked(!item.isChecked());
-                item.setIcon(!item.isChecked() ? R.drawable.ic_star_border_black_24dp : R.drawable.ic_star_black_24dp);
-                break;
-            case R.id.palette:
-                deleteNote(currentNote);
-                break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -224,7 +215,7 @@ public class NoteActivity extends AppCompatActivity {
                 );
     }
 
-    private void saveNoteAndClose(Note note) {
+    public void saveNoteAndClose(Note note) {
         //todo show progressbar
         Completable dbNoteCompletable = isNoteEditingMode ?
                 NotesApp.getInstance().getDatabaseManager().updateNote(note) :

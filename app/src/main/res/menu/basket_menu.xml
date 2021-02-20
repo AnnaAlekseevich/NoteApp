@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item android:id="@+id/basket_return_back"
+        android:icon="@drawable/ic_reestablish"
+        android:title="Reestablish from basket"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/basket_remove"
+        android:icon="@drawable/ic_basket_with_cross_red"
+        android:title="Remove at all"
+        app:showAsAction="always"/>
+
+
+
+
+</menu>

@@ -6,14 +6,15 @@
     android:background="@color/white">
 
     <TextView
-        android:id="@+id/idNotes"
+        android:id="@+id/idAllNotes"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
         android:text="Все заметки"
-        android:gravity="center_vertical"
+        android:layout_margin="16dp"
         android:textSize="25sp"
-        android:padding="16dp"
-        android:background="@color/colorPrimary"/>
+        android:onClick="onDrawerItemClick"/>
 
     <TextView
         android:id="@+id/id_Notes"
@@ -65,7 +66,8 @@
         android:focusable="true"
         android:text="Корзина"
         android:layout_margin="16dp"
-        android:textSize="25sp"/>
+        android:textSize="25sp"
+        android:onClick="onDrawerItemClick"/>
 
     <TextView
         android:id="@+id/idFavorites"
@@ -76,17 +78,8 @@
         android:focusable="true"
         android:text="Избранное"
         android:layout_margin="16dp"
-        android:textSize="25sp"/>
+        android:textSize="25sp"
+        android:onClick="onDrawerItemClick"/>
 
-    <TextView
-        android:id="@+id/idImages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="Картинки"
-        android:layout_margin="16dp"
-        android:textSize="25sp"/>
 
 </LinearLayout>

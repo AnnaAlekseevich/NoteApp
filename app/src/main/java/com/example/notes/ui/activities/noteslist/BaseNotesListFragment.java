@@ -29,22 +29,23 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class NotesListFragment extends Fragment implements NoteListItemClickListener {
+public class BaseNotesListFragment extends Fragment implements NoteListItemClickListener {
 
-    private static final String TAG = NotesListFragment.class.getSimpleName();
+    private static final String TAG = BaseNotesListFragment.class.getSimpleName();
     private static final String ARG_TYPE = "ARG_TYPE";
 
-    private NotesAdapter notesAdapter;
+    protected NotesAdapter notesAdapter;
     //for notes from hint
 
     ProgressBar pb_list_notes;
     TextView tv_error;
+    TextView tv_hint_for_view_pagers;
     RecyclerView recyclerView;
-    private NoteType currentType;
+    public NoteType currentType;
 
 
-    public static NotesListFragment newInstance(@Nullable NoteType type) {
-        NotesListFragment fragment = new NotesListFragment();
+    public static BaseNotesListFragment newInstance(@Nullable NoteType type) {
+        BaseNotesListFragment fragment = new BaseNotesListFragment();
         Bundle args = new Bundle();
         if (type != null) {
             args.putSerializable(ARG_TYPE, type);
@@ -62,12 +63,16 @@ public class NotesListFragment extends Fragment implements NoteListItemClickList
 
     }
 
+    protected int getLayoutId() {
+        return R.layout.fragment_1;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_1, container, false);
+        View view = inflater.inflate(getLayoutId(), container, false);
         setHasOptionsMenu(true);
 
         notesAdapter = new NotesAdapter(getContext(), this);
@@ -77,9 +82,31 @@ public class NotesListFragment extends Fragment implements NoteListItemClickList
 
         pb_list_notes = view.findViewById(R.id.pb_list_notes);
         tv_error = view.findViewById(R.id.tv_error);
+        tv_hint_for_view_pagers = view.findViewById(R.id.tv_hint_for_view_pagers);
 
+        //todo запихнуть в titleTextView строку из нового метода
+        tv_hint_for_view_pagers.setText(getTitle());
         return view;
     }
+
+    public String getTitle() {
+        if (currentType == null) {
+            return getResources().getString(R.string.all_notes);
+        }
+
+        switch (currentType) {
+            case Text:
+                return getResources().getString(R.string.notes);
+            case List:
+                return getResources().getString(R.string.lists);
+            case Reminder:
+                return getResources().getString(R.string.reminders);
+            default:
+                return "NEW";
+        }
+
+    }
+    //todo добавить метод возвращаюсщтий строку/тайтл
 
 
     @Override
@@ -89,16 +116,10 @@ public class NotesListFragment extends Fragment implements NoteListItemClickList
         startActivity(intent);
     }
 
-
-    private void updateAllNotes() {
-        notesAdapter.clearNotes();
-        tv_error.setVisibility(View.GONE);
-        pb_list_notes.setVisibility(ProgressBar.VISIBLE);
-
+    public void loadNotes() {
         Single<List<Note>> getNotesRequest = currentType == null ?
                 NotesApp.getInstance().getDatabaseManager().getAllNotes() :
                 NotesApp.getInstance().getDatabaseManager().getNotesByType(currentType);
-
 
         getNotesRequest
                 .subscribeOn(Schedulers.io())//thread pool
@@ -111,20 +132,37 @@ public class NotesListFragment extends Fragment implements NoteListItemClickList
 
                     @Override
                     public void onSuccess(List<Note> notes) {
-                        notesAdapter.setNotesAndUpdate(notes);
-                        pb_list_notes.setVisibility(View.GONE);
+                        // onNotesLoaded( notes)
+                        onNotesLoaded(notes);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        pb_list_notes.setVisibility(View.GONE);
-                        tv_error.setVisibility(View.VISIBLE);
-                        tv_error.setText("" + e);
+                        // onLoadError()
+                        onLoadError(e);
 
                     }
                 });
+    }
 
+    public void onNotesLoaded(List<Note> notes) {
+        notesAdapter.setNotesAndUpdate(notes);
+        pb_list_notes.setVisibility(View.GONE);
+    }
 
+    public void onLoadError(Throwable e) {
+        pb_list_notes.setVisibility(View.GONE);
+        tv_error.setVisibility(View.VISIBLE);
+        tv_error.setText("" + e);
+    }
+
+    protected void updateAllNotes() {
+        notesAdapter.clearNotes();
+        tv_error.setVisibility(View.GONE);
+        pb_list_notes.setVisibility(ProgressBar.VISIBLE);
+
+        // loadNotes()
+        loadNotes();
     }
 
 

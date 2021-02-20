@@ -12,4 +12,11 @@
     <string name="empty_data">Недостаточно данных</string>
     <string name="login_title">Авторизуйтесь чтобы открыть заметки</string>
     <string name="create_new_user">Создать нового пользователя</string>
+    <string name="all_notes">Все заметки</string>
+    <string name="notes">Заметки</string>
+    <string name="lists">Списки</string>
+    <string name="reminders">Напоминания</string>
+    <string name="basket">Корзина</string>
+    <string name="favorites">Избранное</string>
+    <string name="images">Картинки</string>
 </resources>

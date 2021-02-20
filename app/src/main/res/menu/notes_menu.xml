@@ -7,16 +7,11 @@
         android:title="Star"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/palette"
-        android:icon="@drawable/ic_palette_black_24dp"
-        android:title="Palette"
-        app:showAsAction="always"/>
 
     <item android:id="@+id/basket"
         android:icon="@drawable/ic_delete_black_24dp"
         android:title="Basket"
         app:showAsAction="always"/>
-
 
 
 </menu>

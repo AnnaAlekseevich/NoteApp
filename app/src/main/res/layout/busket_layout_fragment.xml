@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@android:color/white">
 
     <TextView
         android:id="@+id/tv_hint_for_view_pagers"
         style="@style/TextNotesHint"/>
+
+    <ImageButton
+        android:id="@+id/Basket_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_basket_with_cross"/>
 
 <FrameLayout
     android:layout_width="match_parent"
@@ -24,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Fragment1"
+        android:text="BasketFragment"
         android:textSize="35sp"
         android:visibility="gone" />
 
@@ -40,7 +46,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" />
-
 </FrameLayout>
 
 </LinearLayout>

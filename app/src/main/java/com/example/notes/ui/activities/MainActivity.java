@@ -103,6 +103,10 @@ public class MainActivity extends AppCompatActivity {
     public void onDrawerItemClick(View v) {
         String message = "";
         switch (v.getId()) {
+            case R.id.idAllNotes:
+                viewPager.setCurrentItem(0);
+                message = "All Notes";
+                break;
             case R.id.id_Notes:
                 viewPager.setCurrentItem(1);
                 message = "Notes";
@@ -114,6 +118,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.idReminder:
                 viewPager.setCurrentItem(3);
                 message = "Reminder";
+                break;
+            case R.id.idBasket:
+                viewPager.setCurrentItem(4);
+                message = "Basket";
+                //
+                break;
+            case R.id.idFavorites:
+                message = "Favorites";
+                viewPager.setCurrentItem(5);
+                Toast.makeText(this, "Favorites", Toast.LENGTH_SHORT).show();
                 break;
         }
         if (!message.isEmpty()) {

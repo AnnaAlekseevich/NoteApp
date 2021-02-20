@@ -23,6 +23,8 @@ public class Note implements Parcelable {
     private long userId;
     private String name; //= new String[]{"firstNote", "secondNote"};
     private String text;
+    public boolean basket;
+    public boolean favorites;
     private long createDate;
     private long changeDate;
     @TypeConverters({NoteTypeConverter.class})
@@ -41,6 +43,8 @@ public class Note implements Parcelable {
         userId = in.readLong();
         name = in.readString();
         text = in.readString();
+        basket = in.readByte() != 0;
+        favorites = in.readByte() != 0;
         createDate = in.readLong();
         changeDate = in.readLong();
         noteType = NoteType.valueOf(in.readString());
@@ -152,6 +156,8 @@ public class Note implements Parcelable {
         parcel.writeLong(userId);
         parcel.writeString(name);
         parcel.writeString(text);
+        parcel.writeByte((byte) (basket ? 1 : 0));
+        parcel.writeByte((byte) (favorites ? 1 : 0));
         parcel.writeLong(createDate);
         parcel.writeLong(changeDate);
         Log.d("Type_Problem", "writeToParcel = " + noteType);
