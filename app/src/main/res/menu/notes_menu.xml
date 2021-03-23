@@ -2,9 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/share"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:title="Star"
+        app:showAsAction="always"
+        android:visible="false"/>
+
     <item android:id="@+id/star"
         android:icon="@drawable/ic_star_border_black_24dp"
         android:title="Star"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/convert_text_to_image"
+        android:icon="@drawable/ic_image_black_24dp"
+        android:title="Image"
         app:showAsAction="always"/>
 
 

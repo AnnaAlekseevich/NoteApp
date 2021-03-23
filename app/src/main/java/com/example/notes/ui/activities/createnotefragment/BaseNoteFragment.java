@@ -13,10 +13,13 @@ import com.example.notes.NotesApp;
 import com.example.notes.R;
 import com.example.notes.models.Note;
 import com.example.notes.ui.activities.NoteActivity;
+import com.example.notes.ui.activities.createnotefragment.listfragment.CheckItemsListsAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -34,19 +37,11 @@ public abstract class BaseNoteFragment extends Fragment implements NoteViewHandl
         note = getArguments().getParcelable("ARG_NOTE");
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         drawNote(note);
     }
-
-
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {

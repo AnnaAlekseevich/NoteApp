@@ -5,5 +5,6 @@
     <color name="colorAccent">#76DA03</color>
 
     <color name="white">#fff</color>
+    <color name="bitmap_background">#FFAB40</color>
 
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_image_size">19sp</dimen>
+    <dimen name="text_image_padding">10dp</dimen>
+
+
+</resources>
