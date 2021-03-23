@@ -44,10 +44,6 @@ public class CheckItemsListsAdapter extends RecyclerView.Adapter<CheckItemsLists
         notifyDataSetChanged();
     }
 
-    public void addAndUpdate(CheckNoteItem checkNoteItem) {
-        checkNoteList.add(checkNoteItem);
-        notifyDataSetChanged();
-    }
 
     public void addAndUpdate(List<CheckNoteItem> items) {
         checkNoteList.addAll(items);
