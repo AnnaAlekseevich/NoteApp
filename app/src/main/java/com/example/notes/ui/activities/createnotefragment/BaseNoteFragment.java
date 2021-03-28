@@ -2,23 +2,19 @@ package com.example.notes.ui.activities.createnotefragment;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.notes.NotesApp;
 import com.example.notes.R;
 import com.example.notes.models.Note;
 import com.example.notes.ui.activities.NoteActivity;
-import com.example.notes.ui.activities.createnotefragment.listfragment.CheckItemsListsAdapter;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -46,16 +42,16 @@ public abstract class BaseNoteFragment extends Fragment implements NoteViewHandl
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        inflater.inflate(note.basket? R.menu.basket_menu : R.menu.notes_menu, menu);
+        inflater.inflate(note.basket ? R.menu.basket_menu : R.menu.notes_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem menuStar = menu.findItem(R.id.star);
-        if(menuStar!=null) {
+        if (menuStar != null) {
             changeStarItemView(menuStar, note.favorites);
         }
     }
 
-    private void changeStarItemView(MenuItem starItem, boolean isFavorite){
+    private void changeStarItemView(MenuItem starItem, boolean isFavorite) {
         starItem.setChecked(isFavorite);
         starItem.setIcon(!isFavorite ? R.drawable.ic_star_border_black_24dp : R.drawable.ic_star_black_24dp);
     }
@@ -66,7 +62,7 @@ public abstract class BaseNoteFragment extends Fragment implements NoteViewHandl
 
         switch (item.getItemId()) {
             case R.id.star:
-                changeStarItemView(item,!item.isChecked());
+                changeStarItemView(item, !item.isChecked());
                 if (item.isChecked()) {
                     Log.d(BaseNoteFragment, "star before checked");
                     note.favorites = true;
@@ -112,4 +108,5 @@ public abstract class BaseNoteFragment extends Fragment implements NoteViewHandl
     }
 
     protected abstract void drawNote(Note note);
+
 }

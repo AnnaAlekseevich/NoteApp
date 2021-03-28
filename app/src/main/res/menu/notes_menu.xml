@@ -4,24 +4,29 @@
 
     <item android:id="@+id/share"
         android:icon="@drawable/ic_baseline_share_24"
-        android:title="Star"
-        app:showAsAction="always"
+        android:title="Share Image"
+        app:showAsAction="never"
         android:visible="false"/>
 
     <item android:id="@+id/star"
         android:icon="@drawable/ic_star_border_black_24dp"
-        android:title="Star"
-        app:showAsAction="always"/>
+        android:title="Favorite"
+        app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/convert_text_to_image"
         android:icon="@drawable/ic_image_black_24dp"
-        android:title="Image"
-        app:showAsAction="always"/>
+        android:title="Сделать картинку"
+        app:showAsAction="never"/>
 
 
     <item android:id="@+id/basket"
         android:icon="@drawable/ic_delete_black_24dp"
-        android:title="Basket"
+        android:title="Удалить"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/save"
+        android:icon="@drawable/ic_baseline_save_24"
+        android:title="Save Note"
         app:showAsAction="always"/>
 
 

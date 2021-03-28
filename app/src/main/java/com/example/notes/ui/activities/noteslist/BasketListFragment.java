@@ -23,7 +23,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class BasketListFragment extends BaseNotesListFragment {
 
-    private static final String TAG = "favoritesLOG";
+    private static final String TAG = "basketsLOG";
     private ImageButton basketButton;
 
     @Override
@@ -73,6 +73,31 @@ public class BasketListFragment extends BaseNotesListFragment {
         return view;
     }
 
+    @Override
+    public void handleDeleteClick(Note note) {
+        note.basket = false;
+        NotesApp.getInstance().getDatabaseManager().deleteNote(note)
+                .subscribeOn(Schedulers.io())//thread pool
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new CompletableObserver() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+                        }
+                );
+    }
 
     @Override
     protected int getLayoutId() {

@@ -5,10 +5,6 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/tv_hint_for_view_pagers"
-        style="@style/TextNotesHint"/>
-
     <ImageButton
         android:id="@+id/Basket_button"
         android:layout_width="match_parent"
@@ -41,7 +37,7 @@
         android:layout_gravity="bottom"
         android:visibility="gone" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.example.notes.ui.activities.noteslist.ContextMenuRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

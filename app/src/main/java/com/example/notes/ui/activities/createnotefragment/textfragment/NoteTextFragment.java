@@ -16,7 +16,6 @@ import com.example.notes.R;
 import com.example.notes.models.Note;
 import com.example.notes.ui.activities.createnotefragment.BaseNoteFragment;
 import com.example.notes.ui.activities.createnotefragment.BitmapsAdapter;
-import com.example.notes.utils.BitmapUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -75,7 +74,7 @@ public class NoteTextFragment extends BaseNoteFragment {
                 bitmapsListAdapter.addItemsAndUpdate(createBitmaps(getContext(),et_description.getText().toString()));
                 shareItem.setVisible(true);
                 return true;
-            case R.id.search:
+            case R.id.share:
                 //send images to another apps
                 shareImageUri(saveImage(getContext(), bitmapsListAdapter.getAllBitmapItems().get(0)));
                 return true;

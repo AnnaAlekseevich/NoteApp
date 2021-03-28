@@ -18,5 +18,6 @@
     <string name="reminders">Напоминания</string>
     <string name="basket">Корзина</string>
     <string name="favorites">Избранное</string>
+    <string name="user">Пользователь</string>
     <string name="images">Картинки</string>
 </resources>

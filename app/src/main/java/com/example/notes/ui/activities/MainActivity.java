@@ -6,20 +6,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.notes.R;
-import com.example.notes.models.NoteType;
-import com.example.notes.ui.activities.useractivities.LoginActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.example.notes.R;
+import com.example.notes.models.NoteType;
+import com.example.notes.ui.activities.useractivities.LoginActivity;
+import com.example.notes.utils.PreferenceManager;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import static com.example.notes.ui.activities.NoteActivity.ARG_NoteType;
 
@@ -28,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
     ViewPager2 viewPager;
+    private TextView tvUser;
+    private ImageView logout;
+    final String MENU_CONTEXT = "DELETE";
 
 
     @Override
@@ -37,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate");
 
         drawerLayout = findViewById(R.id.drawerLayout);
+        tvUser = drawerLayout.findViewById(R.id.idUnknown);
+        tvUser.setText(PreferenceManager.getLastUserName());
+
+        logout = drawerLayout.findViewById(R.id.idLogout);
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager = findViewById(R.id.view_pager);
@@ -58,7 +69,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> tab.setText(ViewPagerAdapter.getPageTitle(position))
+        ).attach();
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,17 +95,6 @@ public class MainActivity extends AppCompatActivity {
                     drawerLayout.openDrawer(GravityCompat.START);
                 }
                 break;
-            case R.id.search:
-                message = "search";
-                break;
-            case R.id.sort:
-                message = "sort";
-                break;
-            case R.id.logout:
-                Intent intent = new Intent(this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                break;
             case R.id.view_headline:
                 item.setChecked(!item.isChecked());
                 item.setIcon(!item.isChecked() ? R.drawable.ic_view_module_black_24dp : R.drawable.ic_view_headline_black_24dp);
@@ -103,6 +110,11 @@ public class MainActivity extends AppCompatActivity {
     public void onDrawerItemClick(View v) {
         String message = "";
         switch (v.getId()) {
+            case R.id.idLogout:
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                break;
             case R.id.idAllNotes:
                 viewPager.setCurrentItem(0);
                 message = "All Notes";
@@ -136,11 +148,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.closeDrawer(GravityCompat.START);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart");
-    }
+
 
     @Override
     protected void onResume() {
@@ -160,18 +168,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onStop");
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
-    }
 
-    View.OnClickListener viewClickListener = new View.OnClickListener() {
+    /*View.OnClickListener viewClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             showPopupMenu(v);
         }
-    };
+    };*/
+
+    View.OnClickListener viewClickListener = v -> showPopupMenu(v);
 
     private void showPopupMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(this, v);

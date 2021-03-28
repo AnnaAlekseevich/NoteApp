@@ -2,7 +2,6 @@ package com.example.notes.ui.activities;
 
 import android.util.Log;
 
-import com.example.notes.NotesApp;
 import com.example.notes.models.NoteType;
 import com.example.notes.ui.activities.noteslist.BaseNotesListFragment;
 import com.example.notes.ui.activities.noteslist.BasketListFragment;
@@ -55,4 +54,25 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return CARD_ITEM_SIZE;
     }
+
+    public static CharSequence getPageTitle(int position) {
+        CharSequence title = null;
+        switch (position) {
+            case 0:
+                return title = "Все заметки";
+            case 1:
+                return title = "Заметки";
+            case 2:
+                return title = "Списки";
+            case 3:
+                return title = "Напоминания";
+            case 4:
+                return title = "Корзина";
+            case 5:
+                return title = "Избранное";
+            default:
+                return "NEW";
+        }
+    }
+
 }

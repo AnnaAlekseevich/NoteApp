@@ -48,6 +48,7 @@ public class NoteActivity extends AppCompatActivity {
     private boolean isNoteEditingMode = false; //todo use this flag to edit current note;
     BaseNoteFragment fragmentNotes;
     private long lastCloseTime = 0;
+    private boolean isSaveClose = false;
 
     private void changeProgressBarVisibility(boolean show) {
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -167,8 +168,15 @@ public class NoteActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                isSaveClose = true;
                 onBackPressed();
                 break;
+            case R.id.save:
+                isSaveClose = false;
+                onBackPressed();
+                Toast.makeText(NoteActivity.this, "Сохранено", Toast.LENGTH_SHORT).show();
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -234,7 +242,9 @@ public class NoteActivity extends AppCompatActivity {
                             @Override
                             public void onComplete() {
                                 //todo hide progressbar
-                                finish();//close current Activity
+                                if (!isSaveClose) {
+                                    finish();//close current Activity
+                                }
                             }
 
                             @Override

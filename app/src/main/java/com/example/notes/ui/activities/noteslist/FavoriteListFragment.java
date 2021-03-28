@@ -1,18 +1,11 @@
 package com.example.notes.ui.activities.noteslist;
 
 import android.util.Log;
-import android.widget.Button;
-
 import com.example.notes.NotesApp;
 import com.example.notes.R;
 import com.example.notes.models.Note;
-
-import org.reactivestreams.Subscription;
-
 import java.util.List;
-
 import io.reactivex.Flowable;
-import io.reactivex.FlowableSubscriber;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;

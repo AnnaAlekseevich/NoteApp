@@ -1,5 +1,7 @@
 package com.example.notes.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.notes.models.UserModel;
@@ -35,4 +37,5 @@ public class UserProviderSingleton {
         this.currentUser = currentUser;
         PreferenceManager.saveLastUserName(currentUser.name);
     }
+
 }
