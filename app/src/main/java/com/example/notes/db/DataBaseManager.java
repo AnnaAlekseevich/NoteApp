@@ -11,6 +11,7 @@ import com.example.notes.utils.UserProviderSingleton;
 import java.util.List;
 
 import androidx.room.Room;
+
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -103,4 +104,17 @@ public class DataBaseManager {
         return dao.getNotesByType(noteType.name(), UserProviderSingleton.getInstance().getCurrentUser().id);
     }
 
+    public Single<Note> getNoteByIdWithoutUserId(long noteId) {
+        if (database == null || noteId < 0)
+            return Single.error(new Exception("Database is not available"));
+        final NotesDao dao = database.notesDao();
+        return dao.getNoteByIdWithoutUser(noteId);
+    }
+
+    public Single<Note> getNoteById(long noteId) {
+        if (database == null || noteId < 0)
+            return Single.error(new Exception("Database is not available"));
+        final NotesDao dao = database.notesDao();
+        return dao.getNoteById(noteId, UserProviderSingleton.getInstance().getCurrentUser().id);
+    }
 }

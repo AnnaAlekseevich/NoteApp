@@ -29,13 +29,14 @@ public interface NotesDao {
     @Query("DELETE FROM note WHERE userId = :userId AND basket")
     Completable clearBasket(long userId);
 
+    @Query("SELECT * FROM note WHERE id = :id")
+    Single<Note> getNoteByIdWithoutUser(long id);
+
     @Query("SELECT * FROM note WHERE id = :id AND userId = :userId")
-    Note getById(long id, long userId);
+    Single<Note> getNoteById(long id, long userId);
 
     @Query("SELECT * FROM note WHERE noteType = :typeName AND userId = :userId AND not basket")
     Single<List<Note>> getNotesByType(String typeName, long userId);
-
-
 
     @Insert
     Completable insert(Note note);

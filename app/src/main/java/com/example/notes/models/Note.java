@@ -18,7 +18,7 @@ import androidx.room.TypeConverters;
 
 @Entity
 public class Note implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     public long id;
     private long userId;
     private String name; //= new String[]{"firstNote", "secondNote"};
@@ -34,8 +34,9 @@ public class Note implements Parcelable {
     @TypeConverters({ReminderTypeConverter.class})
     private Reminder reminder;
 
-    public Note(@NonNull NoteType noteType) {
+    public Note(long id, @NonNull NoteType noteType) {
         this.noteType = noteType;
+        this.id = id;
     }
 
     protected Note(Parcel in) {

@@ -15,7 +15,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
-    public static final int CARD_ITEM_SIZE = 6;
+    public static final int CARD_ITEM_SIZE = 4;
     private static final String TAG = "favorites";
 
     public ViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
@@ -39,12 +39,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 3:
                 noteType = NoteType.Reminder;
                 break;
-            case 4:
-                Log.d(TAG, "Basket");
-                return new BasketListFragment();//
-            case 5:
-                Fragment favoriteFragment = new FavoriteListFragment();
-                return favoriteFragment;
         }
 
         return BaseNotesListFragment.newInstance(noteType);
@@ -59,7 +53,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         CharSequence title = null;
         switch (position) {
             case 0:
-                return title = "Все заметки";
+                return title = "Всё";
             case 1:
                 return title = "Заметки";
             case 2:
@@ -67,9 +61,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 3:
                 return title = "Напоминания";
             case 4:
-                return title = "Корзина";
-            case 5:
-                return title = "Избранное";
             default:
                 return "NEW";
         }

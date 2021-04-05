@@ -49,7 +49,7 @@ public class BitmapUtils  {
         canvas.drawColor(ContextCompat.getColor(context, R.color.bitmap_background));
 
 
-//        -----------------------узнвть высоту строчки с нужным шрифтом
+//        -----------------------узнать высоту строчки с нужным шрифтом
         Rect lb = new Rect();
         paint.getTextBounds("I", 0, 1, lb);
 //------------------------------------------------------------------------

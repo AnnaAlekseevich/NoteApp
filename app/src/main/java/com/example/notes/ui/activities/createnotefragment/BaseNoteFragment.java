@@ -75,11 +75,11 @@ public abstract class BaseNoteFragment extends Fragment implements NoteViewHandl
                 return true;
             case R.id.basket:
                 note.basket = true;
-                ((NoteActivity) getActivity()).saveNoteAndClose(getFilledNote());
+                ((NoteActivity) getActivity()).saveNote(getFilledNote(), true);
                 return true;
             case R.id.basket_return_back:
                 note.basket = false;
-                ((NoteActivity) getActivity()).saveNoteAndClose(getFilledNote());
+                ((NoteActivity) getActivity()).saveNote(getFilledNote(), true);
                 return true;
             case R.id.basket_remove:
                 NotesApp.getInstance().getDatabaseManager().deleteNote(note)

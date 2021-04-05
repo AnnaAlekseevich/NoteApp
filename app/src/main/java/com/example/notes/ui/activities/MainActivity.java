@@ -18,14 +18,25 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.notes.NotesApp;
 import com.example.notes.R;
+import com.example.notes.models.Note;
 import com.example.notes.models.NoteType;
 import com.example.notes.ui.activities.useractivities.LoginActivity;
 import com.example.notes.utils.PreferenceManager;
+import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import org.jetbrains.annotations.NotNull;
+
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 import static com.example.notes.ui.activities.NoteActivity.ARG_NoteType;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager2 viewPager;
     private TextView tvUser;
     private ImageView logout;
-    final String MENU_CONTEXT = "DELETE";
-
+    public final static String ARG_NOTE_ID = "arg_note_intent_main";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +81,41 @@ public class MainActivity extends AppCompatActivity {
         });
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
+
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(ViewPagerAdapter.getPageTitle(position))
         ).attach();
 
+        openNoteActivityIfNotificationExistForCurrentUser(getIntent().getLongExtra(MainActivity.ARG_NOTE_ID, -1));
+
+        Log.d("noteIdNotification", "noteIdNotification in MainActivity = "
+                + getIntent().getLongExtra(MainActivity.ARG_NOTE_ID, -1));
+    }
+
+    private void openNoteActivityIfNotificationExistForCurrentUser(long noteId) {
+        if (noteId > 0) {
+            NotesApp.getInstance().getDatabaseManager().getNoteById(noteId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new SingleObserver<Note>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(@NotNull Note note) {
+                            Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                            intent.putExtra(NoteActivity.ARG_NOTE, note);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+
+                        }
+                    });
+        }
     }
 
 
@@ -132,14 +173,17 @@ public class MainActivity extends AppCompatActivity {
                 message = "Reminder";
                 break;
             case R.id.idBasket:
-                viewPager.setCurrentItem(4);
-                message = "Basket";
+                //viewPager.setCurrentItem(4);
+                //message = "Basket";
                 //
+                Intent intentBasket = new Intent(MainActivity.this, BasketActivity.class);
+                intentBasket.putExtra(ARG_NoteType, NoteType.Text);
+                startActivity(intentBasket);
                 break;
             case R.id.idFavorites:
-                message = "Favorites";
-                viewPager.setCurrentItem(5);
-                Toast.makeText(this, "Favorites", Toast.LENGTH_SHORT).show();
+                Intent intentFavorite = new Intent(MainActivity.this, FavoriteActivity.class);
+                intentFavorite.putExtra(ARG_NoteType, NoteType.Text);
+                startActivity(intentFavorite);
                 break;
         }
         if (!message.isEmpty()) {
@@ -147,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
         }
         drawerLayout.closeDrawer(GravityCompat.START);
     }
-
 
 
     @Override
