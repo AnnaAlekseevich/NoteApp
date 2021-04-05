@@ -1,22 +1,17 @@
 package com.example.notes.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.example.notes.R;
-import com.example.notes.ui.activities.createnotefragment.BitmapsAdapter;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,7 +49,7 @@ public class BitmapUtils  {
         canvas.drawColor(ContextCompat.getColor(context, R.color.bitmap_background));
 
 
-//        -----------------------узнвть высоту строчки с нужным шрифтом
+//        -----------------------узнать высоту строчки с нужным шрифтом
         Rect lb = new Rect();
         paint.getTextBounds("I", 0, 1, lb);
 //------------------------------------------------------------------------

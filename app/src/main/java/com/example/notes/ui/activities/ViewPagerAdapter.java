@@ -2,7 +2,6 @@ package com.example.notes.ui.activities;
 
 import android.util.Log;
 
-import com.example.notes.NotesApp;
 import com.example.notes.models.NoteType;
 import com.example.notes.ui.activities.noteslist.BaseNotesListFragment;
 import com.example.notes.ui.activities.noteslist.BasketListFragment;
@@ -16,7 +15,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
-    public static final int CARD_ITEM_SIZE = 6;
+    public static final int CARD_ITEM_SIZE = 4;
     private static final String TAG = "favorites";
 
     public ViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
@@ -40,12 +39,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 3:
                 noteType = NoteType.Reminder;
                 break;
-            case 4:
-                Log.d(TAG, "Basket");
-                return new BasketListFragment();//
-            case 5:
-                Fragment favoriteFragment = new FavoriteListFragment();
-                return favoriteFragment;
         }
 
         return BaseNotesListFragment.newInstance(noteType);
@@ -55,4 +48,22 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return CARD_ITEM_SIZE;
     }
+
+    public static CharSequence getPageTitle(int position) {
+        CharSequence title = null;
+        switch (position) {
+            case 0:
+                return title = "Всё";
+            case 1:
+                return title = "Заметки";
+            case 2:
+                return title = "Списки";
+            case 3:
+                return title = "Напоминания";
+            case 4:
+            default:
+                return "NEW";
+        }
+    }
+
 }

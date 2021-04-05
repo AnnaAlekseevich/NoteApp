@@ -1,14 +1,17 @@
 package com.example.notes.ui.activities.createnotefragment.reminderfragment;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.notes.R;
 import com.example.notes.models.Note;
@@ -24,23 +31,26 @@ import com.example.notes.ui.activities.createnotefragment.BaseNoteFragment;
 
 import java.util.Calendar;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-
 public class ReminderFragment extends BaseNoteFragment {
 
     TextView tv_description_date;
     EditText et_description_note;
     static Calendar dateAndTime = Calendar.getInstance();
+    private static final String Time = "ReminderTime";
+    private static final String NotificationReminderFragment = "NotificationReminderFragment";
+
     Button btActivate;
-    public static String create_reminder = "SKOVORODA";
-    String reminder = "У Вас напоминание";
 
 
     public static ReminderFragment newInstance() {
         ReminderFragment fragment = new ReminderFragment();
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        createNotificationChannel();
     }
 
     @Override
@@ -90,48 +100,66 @@ public class ReminderFragment extends BaseNoteFragment {
 
         btActivate = view.findViewById(R.id.setReminder);
         btActivate.setOnClickListener(view1 -> {
-            note.getReminder().setActive(!note.getReminder().isActive());
-            changeActivateButtonText();
-            addNotification();
+
+            //todo it's working
+
+           if(!note.getReminder().isActive()) {
+               Toast.makeText(getContext(), "Напоминание установлено!",
+                       Toast.LENGTH_SHORT).show();
+               Intent notifyIntent = new Intent(getContext(), MyReceiver.class);
+               notifyIntent.setAction(""+getFilledNote().id);
+
+               Log.d("noteIdNotification","Напоминание activate getFilledNote.id = " +getFilledNote().id);
+               Log.d("noteIdNotification","Напоминание activate note.id = " +note.id);
+
+
+               PendingIntent pendingIntent = PendingIntent.getBroadcast
+                       (getContext(), 1, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+               AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+               alarmManager.set(AlarmManager.RTC_WAKEUP, getFilledNote().getReminder().getReminderDate(),
+                       pendingIntent);
+
+               Log.d(Time, "Reminder time = " + getFilledNote().getReminder().getReminderDate());
+               Log.d(Time, "System time = " + System.currentTimeMillis());
+               note.getReminder().setActive(!note.getReminder().isActive());
+               changeActivateButtonText();
+           } else if (note.getReminder().isActive()) {
+               Toast.makeText(getContext(), "Напоминание отменено!",
+                       Toast.LENGTH_SHORT).show();
+               AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+               Intent myIntent = new Intent(getContext(), MyReceiver.class);
+               PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                       getContext(), 1, myIntent,
+                       0);
+
+               alarmManager.cancel(pendingIntent);
+               note.getReminder().setActive(!note.getReminder().isActive());
+               changeActivateButtonText();
+           }
+
+
+
+
         });
 
         return view;
     }
 
-    private void addNotification() {
+    private void createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "LemubitReminderChannel";
+            String description = "Channel for Lemubit Reminder";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifyLemubit", name, importance);
+            channel.setDescription(description);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(create_reminder, "My channel",
-                    NotificationManager.IMPORTANCE_HIGH);
-
-            channel.setDescription("My channel description");
-            channel.enableLights(true);
-            channel.setLightColor(Color.RED);
-            channel.enableVibration(false);
+            NotificationManager notificationManager =
+                    (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
         }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), create_reminder)
-                .setSmallIcon(R.drawable.ic_priority_high_black_24dp)
-                .setContentTitle(reminder)
-                .setContentText(note.getName())
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        /*Intent notificationIntent = new Intent(this, ReminderFragment.class);
-        notificationIntent.setAction(ACTION_SNOOZE);
-        notificationIntent.putExtra(EXTRA_NOTIFICATION_ID, 0);
-        PendingIntent snoozePendingIntent =
-                PendingIntent.getBroadcast(this, 0, notificationIntent, 0);*/
-
-
-        Notification notification = builder.build();
-
-        notificationManager.notify(1, notification);
-
     }
+
 
     // отображаем диалоговое окно для выбора даты
     public void setDate(View v) {

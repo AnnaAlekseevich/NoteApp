@@ -1,9 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/idUnknown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="@string/user"
+            android:layout_margin="16dp"
+            android:textSize="25sp"
+            android:onClick="onDrawerItemClick"/>
+
+        <ImageView
+            android:id="@+id/idLogout"
+            android:layout_width="74dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_transfer_within_a_station_black_24dp"
+            tools:ignore="InvalidId"
+            android:onClick="onDrawerItemClick">
+        </ImageView>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
     <TextView
         android:id="@+id/idAllNotes"
@@ -11,7 +46,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        android:text="Все заметки"
+        android:text="@string/all_notes"
         android:layout_margin="16dp"
         android:textSize="25sp"
         android:onClick="onDrawerItemClick"/>
@@ -23,7 +58,7 @@
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:text="Заметки"
+        android:text="@string/notes"
         android:layout_margin="16dp"
         android:textSize="25sp"
         android:onClick="onDrawerItemClick"/>
@@ -35,7 +70,7 @@
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:text="Списки"
+        android:text="@string/lists"
         android:layout_margin="16dp"
         android:textSize="25sp"
         android:onClick="onDrawerItemClick"/>
@@ -47,7 +82,7 @@
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:text="Напоминания"
+        android:text="@string/reminders"
         android:layout_margin="16dp"
         android:textSize="25sp"
         android:onClick="onDrawerItemClick"/>
@@ -64,7 +99,7 @@
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:text="Корзина"
+        android:text="@string/basket"
         android:layout_margin="16dp"
         android:textSize="25sp"
         android:onClick="onDrawerItemClick"/>
@@ -76,7 +111,7 @@
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:text="Избранное"
+        android:text="@string/favorites"
         android:layout_margin="16dp"
         android:textSize="25sp"
         android:onClick="onDrawerItemClick"/>

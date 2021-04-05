@@ -3,12 +3,17 @@ package com.example.notes.ui.activities;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.notes.NotesApp;
 import com.example.notes.R;
@@ -24,11 +29,6 @@ import com.example.notes.ui.activities.createnotefragment.textfragment.NoteTextF
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -49,6 +49,7 @@ public class NoteActivity extends AppCompatActivity {
     BaseNoteFragment fragmentNotes;
     private long lastCloseTime = 0;
 
+
     private void changeProgressBarVisibility(boolean show) {
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
     }
@@ -63,8 +64,8 @@ public class NoteActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_keyboard_backspace_black_24dp);
 
         etName = findViewById(R.id.et_name);
-        //etText = findViewById(R.id.et_description_note);
         progressBar = findViewById(R.id.progress_bar);
+
 
         if (getIntent().getParcelableExtra(ARG_NOTE) == null) {
             // it means that we have to create new note
@@ -80,11 +81,15 @@ public class NoteActivity extends AppCompatActivity {
             updateViewWithNote(currentNote);
         }
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        fragmentNotes = generateFragment();
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Bundle bundle = new Bundle();
+
         bundle.putParcelable("ARG_NOTE", currentNote);//todo move key name to BaseNoteFragment
+        fragmentNotes = generateFragment();
+
+
         fragmentNotes.setArguments(bundle);
         ft.replace(R.id.fragment_note, fragmentNotes);
         ft.commit();
@@ -111,7 +116,7 @@ public class NoteActivity extends AppCompatActivity {
 
 
     private Note createNewNote() {
-        Note note = new Note(currentNoteType);
+        Note note = new Note(System.currentTimeMillis(), currentNoteType);
         note.setCreateDate(System.currentTimeMillis());
         List<CheckNoteItem> firstChecklist = new ArrayList<>();
         firstChecklist.add(new CheckNoteItem());
@@ -132,7 +137,7 @@ public class NoteActivity extends AppCompatActivity {
         Log.d("USER_PROBLEM", "onBackPressed");
         fillInNote();
         if (isDataEnaughtToSave()) {
-            saveNoteAndClose(currentNote);
+            saveNote(currentNote,true);
         } else {
             Toast.makeText(this, "Заметка пуста. Чтобы выйти, нажмите еще раз", Toast.LENGTH_SHORT).show();
 
@@ -140,6 +145,15 @@ public class NoteActivity extends AppCompatActivity {
                 finish();
             }
             lastCloseTime = System.currentTimeMillis();
+        }
+
+    }
+
+    public void onSavePressed() {
+        Log.d("USER_PROBLEM", "onBackPressed");
+        fillInNote();
+        if (isDataEnaughtToSave()) {
+            saveNote(currentNote, false);
         }
 
     }
@@ -169,6 +183,11 @@ public class NoteActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 break;
+            case R.id.save:
+                onSavePressed();
+                Toast.makeText(NoteActivity.this, "Сохранено", Toast.LENGTH_SHORT).show();
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -215,9 +234,9 @@ public class NoteActivity extends AppCompatActivity {
                 );
     }
 
-    public void saveNoteAndClose(Note note) {
+    public void saveNote(Note note, boolean closeActivityAfterSaving) {
         //todo show progressbar
-        Completable dbNoteCompletable = isNoteEditingMode ?
+        Completable dbNoteCompletable = (isNoteEditingMode) ?
                 NotesApp.getInstance().getDatabaseManager().updateNote(note) :
                 NotesApp.getInstance().getDatabaseManager().insertNote(note);
 
@@ -233,8 +252,12 @@ public class NoteActivity extends AppCompatActivity {
 
                             @Override
                             public void onComplete() {
+                                Log.d("SAVE_PROBLEM", "ID = " + currentNote.id);
                                 //todo hide progressbar
-                                finish();//close current Activity
+                                isNoteEditingMode = true;
+                                if (closeActivityAfterSaving) {
+                                    finish();//close current Activity
+                                }
                             }
 
                             @Override

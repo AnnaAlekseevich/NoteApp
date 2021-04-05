@@ -25,12 +25,18 @@ public class LoginActivity extends AppCompatActivity {
     EditText etUserName;
     EditText etUserPass;
 
+    public long noteIdNotification;
+    public final static String ARG_NOTE_ID = "arg_note_intent";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
+
+        noteIdNotification = getIntent().getLongExtra(ARG_NOTE_ID, -1);
+        Log.d("noteIdNotification", "noteIdNotification in LoginActivity= " + noteIdNotification);
 
         etUserName = findViewById(R.id.et_login_name);
         etUserPass = findViewById(R.id.et_login_pass);
@@ -48,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
 
     @Override
     protected void onResume() {
@@ -69,8 +76,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(UserModel userModel) {
-                        Log.d("REGISTRATION_SUCCESS", "User by name =" + userModel);
-                        Log.d("REGISTRATION_SUCCESS", "User pass =" + pass);
                         if (userModel.pass.equals(pass)) {
                             onLoginSuccessful(userModel);
                         }else{
@@ -92,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
     private void onLoginSuccessful(UserModel userModel) {
         UserProviderSingleton.getInstance().updateCurrentUser(userModel);
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(MainActivity.ARG_NOTE_ID, noteIdNotification);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

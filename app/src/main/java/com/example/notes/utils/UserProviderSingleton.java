@@ -2,9 +2,9 @@ package com.example.notes.utils;
 
 import android.util.Log;
 
-import com.example.notes.models.UserModel;
-
 import androidx.annotation.Nullable;
+
+import com.example.notes.models.UserModel;
 
 public class UserProviderSingleton {
 
@@ -35,4 +35,5 @@ public class UserProviderSingleton {
         this.currentUser = currentUser;
         PreferenceManager.saveLastUserName(currentUser.name);
     }
+
 }

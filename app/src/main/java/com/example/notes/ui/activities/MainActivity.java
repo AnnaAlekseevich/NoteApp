@@ -6,29 +6,46 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.notes.R;
-import com.example.notes.models.NoteType;
-import com.example.notes.ui.activities.useractivities.LoginActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.notes.NotesApp;
+import com.example.notes.R;
+import com.example.notes.models.Note;
+import com.example.notes.models.NoteType;
+import com.example.notes.ui.activities.useractivities.LoginActivity;
+import com.example.notes.utils.PreferenceManager;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import org.jetbrains.annotations.NotNull;
+
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 import static com.example.notes.ui.activities.NoteActivity.ARG_NoteType;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
     ViewPager2 viewPager;
-
+    private TextView tvUser;
+    private ImageView logout;
+    public final static String ARG_NOTE_ID = "arg_note_intent_main";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate");
 
         drawerLayout = findViewById(R.id.drawerLayout);
+        tvUser = drawerLayout.findViewById(R.id.idUnknown);
+        tvUser.setText(PreferenceManager.getLastUserName());
+
+        logout = drawerLayout.findViewById(R.id.idLogout);
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager = findViewById(R.id.view_pager);
@@ -58,7 +79,45 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> tab.setText(ViewPagerAdapter.getPageTitle(position))
+        ).attach();
+
+        openNoteActivityIfNotificationExistForCurrentUser(getIntent().getLongExtra(MainActivity.ARG_NOTE_ID, -1));
+
+        Log.d("noteIdNotification", "noteIdNotification in MainActivity = "
+                + getIntent().getLongExtra(MainActivity.ARG_NOTE_ID, -1));
     }
+
+    private void openNoteActivityIfNotificationExistForCurrentUser(long noteId) {
+        if (noteId > 0) {
+            NotesApp.getInstance().getDatabaseManager().getNoteById(noteId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new SingleObserver<Note>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(@NotNull Note note) {
+                            Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                            intent.putExtra(NoteActivity.ARG_NOTE, note);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+
+                        }
+                    });
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,17 +136,6 @@ public class MainActivity extends AppCompatActivity {
                     drawerLayout.openDrawer(GravityCompat.START);
                 }
                 break;
-            case R.id.search:
-                message = "search";
-                break;
-            case R.id.sort:
-                message = "sort";
-                break;
-            case R.id.logout:
-                Intent intent = new Intent(this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                break;
             case R.id.view_headline:
                 item.setChecked(!item.isChecked());
                 item.setIcon(!item.isChecked() ? R.drawable.ic_view_module_black_24dp : R.drawable.ic_view_headline_black_24dp);
@@ -103,6 +151,11 @@ public class MainActivity extends AppCompatActivity {
     public void onDrawerItemClick(View v) {
         String message = "";
         switch (v.getId()) {
+            case R.id.idLogout:
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                break;
             case R.id.idAllNotes:
                 viewPager.setCurrentItem(0);
                 message = "All Notes";
@@ -120,14 +173,17 @@ public class MainActivity extends AppCompatActivity {
                 message = "Reminder";
                 break;
             case R.id.idBasket:
-                viewPager.setCurrentItem(4);
-                message = "Basket";
+                //viewPager.setCurrentItem(4);
+                //message = "Basket";
                 //
+                Intent intentBasket = new Intent(MainActivity.this, BasketActivity.class);
+                intentBasket.putExtra(ARG_NoteType, NoteType.Text);
+                startActivity(intentBasket);
                 break;
             case R.id.idFavorites:
-                message = "Favorites";
-                viewPager.setCurrentItem(5);
-                Toast.makeText(this, "Favorites", Toast.LENGTH_SHORT).show();
+                Intent intentFavorite = new Intent(MainActivity.this, FavoriteActivity.class);
+                intentFavorite.putExtra(ARG_NoteType, NoteType.Text);
+                startActivity(intentFavorite);
                 break;
         }
         if (!message.isEmpty()) {
@@ -136,11 +192,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.closeDrawer(GravityCompat.START);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart");
-    }
 
     @Override
     protected void onResume() {
@@ -160,18 +211,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onStop");
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
-    }
 
-    View.OnClickListener viewClickListener = new View.OnClickListener() {
+    /*View.OnClickListener viewClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             showPopupMenu(v);
         }
-    };
+    };*/
+
+    View.OnClickListener viewClickListener = v -> showPopupMenu(v);
 
     private void showPopupMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(this, v);

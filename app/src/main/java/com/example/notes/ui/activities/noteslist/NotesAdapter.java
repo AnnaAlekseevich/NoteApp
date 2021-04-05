@@ -19,11 +19,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
 
     private Context context;
     private List<Note> notes;
     private NoteListItemClickListener noteListItemClickListener;
+
 
     public NotesAdapter(Context context, NoteListItemClickListener noteListItemClickListener) {
         this.context = context;
@@ -35,8 +37,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         notifyDataSetChanged();
     }
 
+    public void deleteNoteByPosition (int position) {
+        notes.remove(position);
+        notifyDataSetChanged();
+    }
+
     public void clearNotes() {
         setNotesAndUpdate(null);
+    }
+
+    public Note getNoteByPosition (int position) {
+        return notes.get(position);
     }
 
     @NonNull
@@ -58,7 +69,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
     }
 
 
-    class NoteViewHolder extends RecyclerView.ViewHolder {
+    class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         public TextView tvName;
         public TextView tvData;
         private CheckItemsListsAdapter checkItemsListsAdapter;
@@ -86,6 +97,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                     noteListItemClickListener.onNoteClicked(note);
                 }
             });
+            itemView.setOnLongClickListener(this);
         }
 
         public void updateHolder(Note note) {
@@ -119,6 +131,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                     dateAndTime.getTimeInMillis(),
                     DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
                             | DateUtils.FORMAT_SHOW_TIME));
+        }
+
+
+        @Override
+        public boolean onLongClick(View itemView) {
+            recyclerView.showContextMenuForChild(itemView);
+            return true;
         }
     }
 
