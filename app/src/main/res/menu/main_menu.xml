@@ -2,6 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/view_search"
+        android:title="Headline"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:checkable="true"
+        android:checked="false"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView"/>
+
     <item android:id="@+id/view_headline"
         android:title="Headline"
         android:icon="@drawable/ic_view_headline_black_24dp"

@@ -12,20 +12,20 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.example.notes.NotesApp;
 import com.example.notes.R;
 import com.example.notes.models.Note;
 import com.example.notes.models.NoteType;
 import com.example.notes.ui.activities.NoteActivity;
 
-import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.Single;
@@ -38,12 +38,13 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
 
     private static final String TAG = BaseNotesListFragment.class.getSimpleName();
     private static final String ARG_TYPE = "ARG_TYPE";
-    private static String title;
-    private static int page;
+    private static String ARG_query = "ARG_query";
+
     public final static String POSITION = "position";
 
     protected NotesAdapter notesAdapter;
-    //for notes from hint
+
+    private String query = "";
 
     ProgressBar pb_list_notes;
     TextView tv_error;
@@ -58,13 +59,12 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
     }
 
 
-    public static BaseNotesListFragment newInstance(@Nullable NoteType type) {
+    public static BaseNotesListFragment newInstance(@Nullable NoteType type, @Nullable String query) {
         BaseNotesListFragment fragment = new BaseNotesListFragment();
         Bundle args = new Bundle();
         if (type != null) {
             args.putSerializable(ARG_TYPE, type);
-            args.putInt("someInt", page);
-            args.putString("someTitle", title);
+            args.putString(ARG_query, query);
         }
         fragment.setArguments(args);
         return fragment;
@@ -73,10 +73,13 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().getSerializable(ARG_TYPE) != null) {
-            currentType = (NoteType) getArguments().getSerializable(ARG_TYPE);
-            page = getArguments().getInt("someInt", 0);
-            title = getArguments().getString("someTitle");
+        if (getArguments() != null) {
+            if (getArguments().getSerializable(ARG_TYPE) != null) {
+                currentType = (NoteType) getArguments().getSerializable(ARG_TYPE);
+            }
+
+            query = getArguments().getString(ARG_query, "");
+            Log.d("SearchFragment", "ARG_query = " + query);
         }
 
     }
@@ -103,10 +106,6 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
         progressBar = view.findViewById(R.id.pb_list_notes);
         registerForContextMenu(recyclerView);
 
-        //todo запихнуть в titleTextView строку из нового метода\
-
-        //TextView tvLabel = (TextView) view.findViewById(R.id.tv_hint_for_view_pagers);
-        //tvLabel.setText(page + " -- " + title);
 
         return view;
     }
@@ -128,9 +127,9 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
         switch (item.getItemId()) {
             case MENU_DELETE:
 
-                ContextMenuRecyclerView.RecyclerViewContextMenuInfo contextMenuRecyclerView = ( (ContextMenuRecyclerView.RecyclerViewContextMenuInfo) recyclerView.getContextMenuInfo());
+                ContextMenuRecyclerView.RecyclerViewContextMenuInfo contextMenuRecyclerView = ((ContextMenuRecyclerView.RecyclerViewContextMenuInfo) recyclerView.getContextMenuInfo());
 
-                if(contextMenuRecyclerView!=null) {
+                if (contextMenuRecyclerView != null) {
                     int positionIndex = contextMenuRecyclerView.position;
                     Note notePosition = notesAdapter.getNoteByPosition(positionIndex);
                     notesAdapter.deleteNoteByPosition(positionIndex);
@@ -159,7 +158,7 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
         }
 
     }
-    //todo добавить метод возвращаюсщтий строку/тайтл
+
 
 
     @Override
@@ -169,10 +168,34 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
         startActivity(intent);
     }
 
+    public void updateQuery(String q) {
+        query = q;
+        loadNotes();
+    }
+
     public void loadNotes() {
-        Single<List<Note>> getNotesRequest = currentType == null ?
-                NotesApp.getInstance().getDatabaseManager().getAllNotes() :
-                NotesApp.getInstance().getDatabaseManager().getNotesByType(currentType);
+
+        Log.d("SearchFragment", "query = " + query);
+        Single<List<Note>> getNotesRequest;
+
+        if (currentType != null) {
+            if (query.equals("")) {
+                getNotesRequest = NotesApp.getInstance().getDatabaseManager().getNotesByType(currentType);
+                Log.d("SearchFragment", "(currentType != null and query = _ ) Fragment query = " + query);
+            } else {
+                getNotesRequest = NotesApp.getInstance().getDatabaseManager().getNotesByTypeWithQuery(currentType, query);
+                Log.d("SearchFragment", "(currentType != null) Fragment query = " + query);
+            }
+        } else {
+
+            if (query.equals("")) {
+                getNotesRequest = NotesApp.getInstance().getDatabaseManager().getAllNotes();
+                Log.d("SearchFragment", ".equals( ) Fragment query = " + query);
+            } else {
+                getNotesRequest = NotesApp.getInstance().getDatabaseManager().getSearchAllNotes(query);
+                Log.d("SearchFragment", "not null Fragment query = " + query);
+            }
+        }
 
         getNotesRequest
                 .subscribeOn(Schedulers.io())//thread pool
@@ -199,6 +222,9 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
     }
 
     public void onNotesLoaded(List<Note> notes) {
+        if (query == null ) {
+            query = "";
+        }
         notesAdapter.setNotesAndUpdate(notes);
         pb_list_notes.setVisibility(View.GONE);
     }
@@ -311,8 +337,6 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
                         }
                 );
     }
-
-
 
 
 }
