@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.notes.NotesApp;
 import com.example.notes.R;
@@ -14,7 +18,6 @@ import com.example.notes.ui.activities.MainActivity;
 import com.example.notes.utils.PreferenceManager;
 import com.example.notes.utils.UserProviderSingleton;
 
-import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -24,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText etUserName;
     EditText etUserPass;
+    Button btnCreate;
+    TextView tvRegister;
 
     public long noteIdNotification;
     public final static String ARG_NOTE_ID = "arg_note_intent";
@@ -40,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
 
         etUserName = findViewById(R.id.et_login_name);
         etUserPass = findViewById(R.id.et_login_pass);
+        btnCreate = findViewById(R.id.btn_create);
+        tvRegister = findViewById(R.id.tv_register);
+
         findViewById(R.id.btn_create).setOnClickListener(view -> {
             if (TextUtils.isEmpty(etUserName.getText().toString()) || TextUtils.isEmpty(etUserName.getText().toString())) {
                 Toast.makeText(this, R.string.empty_data, Toast.LENGTH_SHORT).show();

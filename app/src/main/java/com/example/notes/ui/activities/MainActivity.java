@@ -2,12 +2,15 @@ package com.example.notes.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +27,6 @@ import com.example.notes.models.Note;
 import com.example.notes.models.NoteType;
 import com.example.notes.ui.activities.useractivities.LoginActivity;
 import com.example.notes.utils.PreferenceManager;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -46,6 +48,21 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvUser;
     private ImageView logout;
     public final static String ARG_NOTE_ID = "arg_note_intent_main";
+    public ViewPagerAdapter adapter;
+
+    private static final int QUERY_KEY = 1000;
+    private static final long DELAY_TIME_FOR_START_SEARCH = 2000;
+
+    private Handler searchHandler = new Handler() {
+
+        @Override
+        public void handleMessage(@NonNull @NotNull Message msg) {
+            super.handleMessage(msg);
+            Log.d("SearchHandle", "Message = " + msg);
+            adapter.updateQuery((String) msg.obj);
+            //adapter.notifyDataSetChanged();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         logout = drawerLayout.findViewById(R.id.idLogout);
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(adapter);
 
@@ -67,14 +84,9 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
-        //for PopupMenu
-
         findViewById(R.id.floatingActionButton2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // create notes
-                //Intent intent = new Intent(MainActivity.this, NoteActivity.class);
-                //startActivity(intent);//fixme startActivityForResult
                 showPopupMenu(view);
 
             }
@@ -90,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("noteIdNotification", "noteIdNotification in MainActivity = "
                 + getIntent().getLongExtra(MainActivity.ARG_NOTE_ID, -1));
+
+
     }
 
     private void openNoteActivityIfNotificationExistForCurrentUser(long noteId) {
@@ -122,7 +136,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        SearchView searchView = (SearchView) menu.findItem(R.id.view_search).getActionView();
+
+// Здесь можно указать будет ли строка поиска изначально развернута или свернута в значок
+        searchView.setIconifiedByDefault(true);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                handleSearhQueryUprate(newText);
+                return true;
+            }
+        });
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    private void handleSearhQueryUprate(String query) {
+        Log.d("Search", "updated. new query= " + query);
+        searchHandler.removeMessages(QUERY_KEY);
+        searchHandler.sendMessageDelayed(Message.obtain(searchHandler, QUERY_KEY, query), DELAY_TIME_FOR_START_SEARCH);
     }
 
     @Override
@@ -140,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
                 item.setChecked(!item.isChecked());
                 item.setIcon(!item.isChecked() ? R.drawable.ic_view_module_black_24dp : R.drawable.ic_view_headline_black_24dp);
                 break;
-
         }
         if (!message.isEmpty()) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -211,14 +249,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onStop");
     }
 
-
-    /*View.OnClickListener viewClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showPopupMenu(v);
-        }
-    };*/
-
     View.OnClickListener viewClickListener = v -> showPopupMenu(v);
 
     private void showPopupMenu(View v) {
@@ -256,8 +286,8 @@ public class MainActivity extends AppCompatActivity {
         popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
             public void onDismiss(PopupMenu menu) {
-                Toast.makeText(getApplicationContext(), "onDismiss",
-                        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "onDismiss",
+                //Toast.LENGTH_SHORT).show();
             }
         });
         popupMenu.show();
