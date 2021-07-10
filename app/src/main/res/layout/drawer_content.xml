@@ -40,52 +40,7 @@
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"/>
 
-    <TextView
-        android:id="@+id/idAllNotes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="@string/all_notes"
-        android:layout_margin="16dp"
-        android:textSize="25sp"
-        android:onClick="onDrawerItemClick"/>
 
-    <TextView
-        android:id="@+id/id_Notes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="@string/notes"
-        android:layout_margin="16dp"
-        android:textSize="25sp"
-        android:onClick="onDrawerItemClick"/>
-
-    <TextView
-        android:id="@+id/idLists"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="@string/lists"
-        android:layout_margin="16dp"
-        android:textSize="25sp"
-        android:onClick="onDrawerItemClick"/>
-
-    <TextView
-        android:id="@+id/idReminder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="@string/reminders"
-        android:layout_margin="16dp"
-        android:textSize="25sp"
-        android:onClick="onDrawerItemClick"/>
 
     <View
         android:layout_width="match_parent"

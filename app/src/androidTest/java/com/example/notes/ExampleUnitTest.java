@@ -30,34 +30,6 @@ public class ExampleUnitTest extends Instrumentation {
     Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     DataBaseManager dataBaseManager = new DataBaseManager(context);
 
-    /*@Before
-    public void setUp() {
-        final Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        rootView = LayoutInflater.from(context).inflate(R.layout.attrributes, null, false);
-    }*/
-
-    /*@Test
-    public void dbCreationTest() {
-
-        dataBaseManager.getAllNotes().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<List<Note>>() {
-                    @Override
-                    public void onSubscribe(@NotNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(@NotNull List<Note> notes) {
-                        assertTrue(true);
-                    }
-
-                    @Override
-                    public void onError(@NotNull Throwable e) {
-                        assertFalse(e instanceof DataBaseManager.RoomDataBaseIsNotCreatedExeption);
-                    }
-                });
-    }*/
 
     @Test
     public void createUserTestUniqueName() {
@@ -77,8 +49,6 @@ public class ExampleUnitTest extends Instrumentation {
                                 .andThen(dataBaseManager.getUserWithName(name));
                     }
                 })
-//                .onErrorResumeNext(NotesApp.getInstance().getDatabaseManager().insertUser(new UserModel(name, pass))
-//                        .andThen(NotesApp.getInstance().getDatabaseManager().getUserWithName(name)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<UserModel>() {
                     @Override

@@ -17,11 +17,4 @@
         android:checked="false"
         app:showAsAction="always"/>
 
-<!--    <item android:id="@+id/view_module"-->
-<!--        android:title="Module"-->
-<!--        android:icon="@drawable/ic_view_module_black_24dp"-->
-<!--        app:showAsAction="always"/>-->
-
-
-
 </menu>
