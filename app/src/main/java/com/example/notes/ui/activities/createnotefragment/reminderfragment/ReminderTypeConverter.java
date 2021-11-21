@@ -1,22 +1,15 @@
 package com.example.notes.ui.activities.createnotefragment.reminderfragment;
 
+import androidx.room.TypeConverter;
+
 import com.example.notes.models.Reminder;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.List;
-
-import androidx.room.TypeConverter;
 
 public class ReminderTypeConverter {
 
     @TypeConverter
     public static Reminder fromString(String value) {
-        Type reminderType = new TypeToken<Reminder>() {
-        }.getType();
-        Reminder reminder = new Gson().fromJson(value, reminderType);
-        return reminder;
+        return new Gson().fromJson(value, Reminder.class);
     }
 
     @TypeConverter

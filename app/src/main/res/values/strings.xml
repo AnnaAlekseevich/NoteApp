@@ -21,4 +21,8 @@
     <string name="user">Пользователь</string>
     <string name="images">Картинки</string>
     <string name="search_hint">Введите название</string>
+    <string name="image_setting_title">Настройки картинки</string>
+    <string name="image_setting_size">Размер шрифта:</string>
+    <string name="image_setting_choose_color">Цвет фона</string>
+    <string name="image_setting_choose_apply">Применить</string>
 </resources>

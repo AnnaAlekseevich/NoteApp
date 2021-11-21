@@ -27,9 +27,11 @@ import com.example.notes.models.Note;
 import com.example.notes.models.NoteType;
 import com.example.notes.ui.activities.useractivities.LoginActivity;
 import com.example.notes.utils.PreferenceManager;
+import com.example.notes.utils.SearchQueryEvent;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.SingleObserver;
@@ -37,6 +39,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.example.notes.models.NoteType.List;
+import static com.example.notes.models.NoteType.Reminder;
+import static com.example.notes.models.NoteType.Text;
 import static com.example.notes.ui.activities.NoteActivity.ARG_NoteType;
 
 
@@ -59,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(@NonNull @NotNull Message msg) {
             super.handleMessage(msg);
             Log.d("SearchHandle", "Message = " + msg);
-            adapter.updateQuery((String) msg.obj);
-            //adapter.notifyDataSetChanged();
+            EventBus.getDefault().post(new SearchQueryEvent(msg.obj.toString()));
         }
     };
 
@@ -82,12 +86,33 @@ public class MainActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setIcon(R.drawable.ic_delete_black_24dp);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
         findViewById(R.id.floatingActionButton2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(view);
+
+                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                switch (adapter.getCurrentNoteType(viewPager.getCurrentItem())) {
+                    case Text:
+                        intent.putExtra(ARG_NoteType, Text);
+                        startActivity(intent);
+                        break;
+                    case List:
+                        intent.putExtra(ARG_NoteType, List);
+                        startActivity(intent);
+                        break;
+                    case Reminder:
+                        intent.putExtra(ARG_NoteType, Reminder);
+                        startActivity(intent);
+                        break;
+                    case AllNotes:
+                        showPopupMenu(view);
+                        break;
+
+                }
+
 
             }
         });
@@ -194,33 +219,14 @@ public class MainActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 break;
-            case R.id.idAllNotes:
-                viewPager.setCurrentItem(0);
-                message = "All Notes";
-                break;
-            case R.id.id_Notes:
-                viewPager.setCurrentItem(1);
-                message = "Notes";
-                break;
-            case R.id.idLists:
-                viewPager.setCurrentItem(2);
-                message = "Lists";
-                break;
-            case R.id.idReminder:
-                viewPager.setCurrentItem(3);
-                message = "Reminder";
-                break;
             case R.id.idBasket:
-                //viewPager.setCurrentItem(4);
-                //message = "Basket";
-                //
                 Intent intentBasket = new Intent(MainActivity.this, BasketActivity.class);
-                intentBasket.putExtra(ARG_NoteType, NoteType.Text);
+                intentBasket.putExtra(ARG_NoteType, Text);
                 startActivity(intentBasket);
                 break;
             case R.id.idFavorites:
                 Intent intentFavorite = new Intent(MainActivity.this, FavoriteActivity.class);
-                intentFavorite.putExtra(ARG_NoteType, NoteType.Text);
+                intentFavorite.putExtra(ARG_NoteType, Text);
                 startActivity(intentFavorite);
                 break;
         }
@@ -254,7 +260,6 @@ public class MainActivity extends AppCompatActivity {
     private void showPopupMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(this, v);
         popupMenu.inflate(R.menu.popup_menu);
-
         popupMenu
                 .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -263,18 +268,15 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (item.getItemId()) {
                             case R.id.menu1:
-                                intent.putExtra(ARG_NoteType, NoteType.Text);
-                                startActivity(intent);//fixme startActivityForResult
-                                /*getSupportFragmentManager().beginTransaction()
-                                        .add(R.id.fragment_note, MainActivity.class, null)
-                                        .commit();*/
+                                intent.putExtra(ARG_NoteType, Text);
+                                startActivity(intent);//fixme startActivityForResul
                                 return true;
                             case R.id.menu2:
                                 intent.putExtra(ARG_NoteType, NoteType.List);
                                 startActivity(intent);//fixme startActivityForResult
                                 return true;
                             case R.id.menu3:
-                                intent.putExtra(ARG_NoteType, NoteType.Reminder);
+                                intent.putExtra(ARG_NoteType, Reminder);
                                 startActivity(intent);//fixme startActivityForResult
                                 return true;
                             default:

@@ -7,14 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.example.notes.NotesApp;
 import com.example.notes.R;
 import com.example.notes.models.Note;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -106,7 +107,6 @@ public class BasketListFragment extends BaseNotesListFragment {
 
     @Override
     public void loadNotes() {
-
 
         NotesApp.getInstance().getDatabaseManager().getDeletedNotes()
                 .subscribeOn(Schedulers.io())//thread pool

@@ -22,7 +22,10 @@ import com.example.notes.R;
 import com.example.notes.models.Note;
 import com.example.notes.models.NoteType;
 import com.example.notes.ui.activities.NoteActivity;
+import com.example.notes.utils.SearchQueryEvent;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -44,7 +47,7 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
 
     protected NotesAdapter notesAdapter;
 
-    private String query = "";
+    private static String query = "";
 
     ProgressBar pb_list_notes;
     TextView tv_error;
@@ -107,6 +110,8 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
         registerForContextMenu(recyclerView);
 
 
+
+
         return view;
     }
 
@@ -116,7 +121,7 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
         // inflate menu here
         //MenuInflater inflater = getActivity().getMenuInflater();
         //inflater.inflate(R.menu.my_context_menu, menu);
-        menu.add(Menu.NONE, MENU_DELETE, Menu.NONE, "DELETE");
+        menu.add(Menu.NONE, MENU_DELETE, Menu.NONE, "УДАЛИТЬ");
         // If you want the position of the item for which we're creating the context menu (perhaps to add a header or something):
         int itemIndex = ((ContextMenuRecyclerView.RecyclerViewContextMenuInfo) menuInfo).position;
         Log.d(POSITION, "itemIndex" + itemIndex);
@@ -168,11 +173,6 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
         startActivity(intent);
     }
 
-    public void updateQuery(String q) {
-        query = q;
-        loadNotes();
-    }
-
     public void loadNotes() {
 
         Log.d("SearchFragment", "query = " + query);
@@ -222,6 +222,11 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
     }
 
     public void onNotesLoaded(List<Note> notes) {
+
+        if(notesAdapter==null){
+            return;
+        }
+
         if (query == null ) {
             query = "";
         }
@@ -253,6 +258,7 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
 
     @Override
     public void onStart() {
+        EventBus.getDefault().register(this);
         super.onStart();
         Log.d(TAG, "onActivityCreated");
     }
@@ -271,8 +277,10 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
 
     @Override
     public void onStop() {
+        EventBus.getDefault().unregister(this);
         super.onStop();
         Log.d(TAG, "onStop");
+
     }
 
     @Override
@@ -336,6 +344,12 @@ public class BaseNotesListFragment extends Fragment implements NoteListItemClick
                             }
                         }
                 );
+    }
+
+    @Subscribe
+    public void onEvent(SearchQueryEvent event) {
+        query = event.searchQueryEvent;
+        loadNotes();
     }
 
 

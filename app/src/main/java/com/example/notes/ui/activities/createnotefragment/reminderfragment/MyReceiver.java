@@ -9,7 +9,6 @@ public class MyReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         Intent intent1 = new Intent(context, MyNewIntentService.class);
         intent1.putExtra(MyNewIntentService.ARG_NOTE_ID, Long.parseLong(intent.getAction()));
         context.startService(intent1);
