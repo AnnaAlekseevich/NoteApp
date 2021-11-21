@@ -8,10 +8,9 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.notes.R;
-
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+
+import com.example.notes.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,13 +21,45 @@ import java.util.List;
 public class BitmapUtils  {
 
     private static String TAG = "SHARE_BITMAP";
+    public int color;
+    public int chooseTextNoteSize;
+    private static String LogC = "SettingBU";
 
-    public static List<Bitmap> createBitmaps(Context context, String text) {
+    public void setСolor(int setColor){
+        this.color = setColor;
+    }
+    public int getСolor(){
+        return color;
+    }
+    public void setChooseTextNoteSize(int chooseTextNoteSize){
+        this.chooseTextNoteSize = chooseTextNoteSize;
+    }
+
+    public static List<Bitmap> createBitmaps(Context context, String text, BitmapUtils bitmapUtils) {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
-        paint.setTextSize(context.getResources().getDimensionPixelSize(
-                R.dimen.text_image_size
-        ));
+//        paint.setTextSize(context.getResources().getDimensionPixelSize(
+//                R.dimen.text_image_size
+//        ));
+        Log.d(LogC, "Size = " + bitmapUtils.chooseTextNoteSize);
+        switch (bitmapUtils.chooseTextNoteSize) {
+            case 12:
+                paint.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_image_text_size12));
+                break;
+            case 14:
+                paint.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_image_text_size14));
+                break;
+            case 16:
+                paint.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_image_text_size16));
+                break;
+            case 18:
+                paint.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_image_text_size18));
+                break;
+            case 20:
+                paint.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_image_text_size20));
+                break;
+        }
+
         String checked_text_start = "";
         String delimeter = " "; // Разделитель
         String[] words = text.split(delimeter); // Разделения строки text с помощью метода split()
@@ -46,7 +77,8 @@ public class BitmapUtils  {
         Bitmap bitmap = Bitmap.createBitmap(bitmap_width, bitmap_height, Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(ContextCompat.getColor(context, R.color.bitmap_background));
+        //canvas.drawColor(ContextCompat.getColor(context, R.color.bitmap_background));
+        canvas.drawColor(bitmapUtils.color);
 
 
 //        -----------------------узнать высоту строчки с нужным шрифтом
@@ -78,7 +110,10 @@ public class BitmapUtils  {
                     bitmapList.add(bitmap);
                     bitmap = Bitmap.createBitmap(bitmap_width, bitmap_height, Bitmap.Config.ARGB_8888);
                     canvas = new Canvas(bitmap);
-                    canvas.drawColor(ContextCompat.getColor(context, R.color.bitmap_background));
+                    //canvas.drawColor(ContextCompat.getColor(context, R.color.bitmap_background));
+                    Log.d(LogC, "Color = " + bitmapUtils.color);
+                    canvas.drawColor(bitmapUtils.color);
+
                 }
             }
         }

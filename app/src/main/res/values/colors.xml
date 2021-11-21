@@ -6,6 +6,10 @@
 
     <color name="white">#fff</color>
     <color name="bitmap_background">#99FF33</color>
+    <color name="radiobutton_red">#FF0000</color>
+    <color name="radiobutton_green">#00FF00</color>
+    <color name="radiobutton_blue">#0000FF</color>
+    <color name="radiobutton_black">#000000</color>
 
 
 </resources>

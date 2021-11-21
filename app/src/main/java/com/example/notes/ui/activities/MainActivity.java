@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setIcon(R.drawable.ic_delete_black_24dp);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
         findViewById(R.id.floatingActionButton2).setOnClickListener(new View.OnClickListener() {

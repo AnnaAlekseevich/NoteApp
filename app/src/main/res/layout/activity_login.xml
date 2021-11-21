@@ -12,12 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/open_user"
+        android:background = "@drawable/login_buttton"
         android:layout_margin="20dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_login_name" />
+        app:layout_constraintTop_toBottomOf="@+id/et_login_name"
+        />
 
 
     <EditText
